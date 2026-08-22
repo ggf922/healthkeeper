@@ -263,6 +263,10 @@
                     <p data-i18n="result-disclaimer">본 분석 결과는 일반적인 건강 정보 제공을 목적으로 한 <strong>참고용</strong>이며, 의학적 진단·처방을 대체할 수 없습니다. 카메라 측정값은 오차가 있을 수 있으며, 증상이 있거나 약을 복용 중이라면 반드시 <strong>전문의와 상담</strong>하시기 바랍니다.</p>
                 </div>
 
+                <div class="result-actions">
+                    <button class="btn btn-secondary" onclick="saveResultAsImage()" data-i18n="btn-save-image">📥 결과 이미지 저장</button>
+                    <button class="btn btn-secondary" onclick="shareResult()" data-i18n="btn-share">🔗 공유하기</button>
+                </div>
                 <button class="btn btn-primary" onclick="restartSurvey()" data-i18n="btn-restart">다시 체크하기</button>
             </section>
         </main>
@@ -375,7 +379,11 @@
                 </div>
 
                 <div class="health-records">
-                    <h3>📈 건강 체크 기록</h3>
+                    <h3>📈 건강 점수 추이</h3>
+                    <div id="health-trend-chart-wrap" class="health-trend-chart-wrap" style="display: none;">
+                        <canvas id="health-trend-chart" height="180"></canvas>
+                    </div>
+                    <h3 style="margin-top: 20px;">📋 건강 체크 기록</h3>
                     <div id="health-records-list">
                         <p class="no-records">아직 건강 체크 기록이 없습니다.</p>
                     </div>
@@ -940,6 +948,8 @@
 
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     
     <!-- MediaPipe Face Mesh for Iris Detection -->
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>

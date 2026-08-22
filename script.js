@@ -1497,6 +1497,68 @@ function displayResults(analysis) {
     document.getElementById('health-tips-list').innerHTML = tipsHTML;
 }
 
+// 결과를 이미지로 저장
+async function saveResultAsImage() {
+    if (typeof html2canvas === 'undefined') {
+        alert(currentLanguage === 'en' ? 'Image library not loaded.' : '이미지 저장 라이브러리를 불러오지 못했습니다.');
+        return;
+    }
+    const target = document.getElementById('result-screen');
+    const actions = document.querySelector('.result-actions');
+    try {
+        if (actions) actions.style.visibility = 'hidden';
+        const canvas = await html2canvas(target, { backgroundColor: '#f5f7fa', scale: 2, useCORS: true });
+        if (actions) actions.style.visibility = 'visible';
+        const link = document.createElement('a');
+        const dateStr = new Date().toISOString().slice(0, 10);
+        link.download = `healthkeeper-result-${dateStr}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    } catch (e) {
+        if (actions) actions.style.visibility = 'visible';
+        console.error('이미지 저장 실패:', e);
+        alert(currentLanguage === 'en' ? 'Failed to save image.' : '이미지 저장에 실패했습니다.');
+    }
+}
+
+// 결과 공유 (Web Share API + 폴백)
+async function shareResult() {
+    const score = lastAnalysisResult ? lastAnalysisResult.healthScore : null;
+    const titles = {
+        ko: '건강 100세 - 내 건강 분석 결과',
+        en: 'HealthKeeper - My Health Analysis',
+        zh: '健康100岁 - 我的健康分析结果',
+        ja: '健康100歳 - 私の健康分析結果'
+    };
+    const scoreText = score !== null
+        ? (currentLanguage === 'en' ? `My health score is ${score}!` : (currentLanguage === 'zh' ? `我的健康分数是${score}分！` : (currentLanguage === 'ja' ? `私の健康スコアは${score}点！` : `내 건강 점수는 ${score}점!`)))
+        : '';
+    const shareData = {
+        title: titles[currentLanguage] || titles.ko,
+        text: `${titles[currentLanguage] || titles.ko}\n${scoreText}`,
+        url: 'https://healthkeeper.store'
+    };
+    try {
+        if (navigator.share) {
+            await navigator.share(shareData);
+        } else {
+            // 폴백: 클립보드 복사
+            const text = `${shareData.text}\n${shareData.url}`;
+            if (navigator.clipboard) {
+                await navigator.clipboard.writeText(text);
+                alert(currentLanguage === 'en' ? 'Copied to clipboard!' : '클립보드에 복사되었습니다!');
+            } else {
+                fallbackCopy(text);
+                alert(currentLanguage === 'en' ? 'Copied to clipboard!' : '클립보드에 복사되었습니다!');
+            }
+        }
+    } catch (e) {
+        if (e && e.name !== 'AbortError') {
+            console.error('공유 실패:', e);
+        }
+    }
+}
+
 // 다시 시작
 function restartSurvey() {
     currentQuestion = 0;
@@ -1564,12 +1626,75 @@ function showMyPage() {
     } else {
         recordsList.innerHTML = '<p class="no-records">아직 건강 체크 기록이 없습니다.</p>';
     }
+
+    // 건강 점수 추이 그래프 렌더링
+    renderHealthTrendChart(currentUser.healthRecords || []);
     
     document.getElementById('mypage-modal').classList.add('active');
     document.body.style.overflow = 'hidden';
     
     // 드롭다운 닫기
     document.getElementById('user-dropdown').classList.remove('active');
+}
+
+// 건강 점수 추이 그래프
+let healthTrendChartInstance = null;
+function renderHealthTrendChart(records) {
+    const wrap = document.getElementById('health-trend-chart-wrap');
+    const canvas = document.getElementById('health-trend-chart');
+    if (!wrap || !canvas || typeof Chart === 'undefined') return;
+
+    // 기록이 2개 미만이면 그래프 숨김 (추이는 최소 2개 필요)
+    if (!records || records.length < 2) {
+        wrap.style.display = 'none';
+        if (healthTrendChartInstance) { healthTrendChartInstance.destroy(); healthTrendChartInstance = null; }
+        return;
+    }
+
+    // 최근 10개 기록 사용 (시간순)
+    const recent = records.slice(-10);
+    const labels = recent.map(r => {
+        const d = new Date(r.date);
+        return isNaN(d.getTime()) ? '-' : `${d.getMonth() + 1}/${d.getDate()}`;
+    });
+    const scores = recent.map(r => r.score);
+
+    wrap.style.display = 'block';
+    if (healthTrendChartInstance) healthTrendChartInstance.destroy();
+
+    healthTrendChartInstance = new Chart(canvas.getContext('2d'), {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                label: currentLanguage === 'en' ? 'Health Score' : (currentLanguage === 'zh' ? '健康分数' : (currentLanguage === 'ja' ? '健康スコア' : '건강 점수')),
+                data: scores,
+                borderColor: '#4CAF50',
+                backgroundColor: 'rgba(76, 175, 80, 0.15)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3,
+                pointRadius: 5,
+                pointBackgroundColor: '#4CAF50',
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: true, position: 'top' },
+                tooltip: {
+                    callbacks: {
+                        label: (ctx) => ` ${ctx.parsed.y}${currentLanguage === 'ko' ? '점' : (currentLanguage === 'zh' ? '分' : (currentLanguage === 'ja' ? '点' : ' pts'))}`
+                    }
+                }
+            },
+            scales: {
+                y: { min: 0, max: 100, ticks: { stepSize: 20 } }
+            }
+        }
+    });
 }
 
 // 마이페이지 닫기

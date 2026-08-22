@@ -1113,6 +1113,143 @@ header h1 {
     margin: 0;
 }
 
+/* 결과 저장/공유 액션 버튼 */
+.result-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.result-actions .btn {
+    flex: 1 1 auto;
+    min-width: 180px;
+    max-width: 280px;
+}
+
+/* 건강 점수 추이 차트 */
+.health-trend-chart-wrap {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 18px 16px;
+    margin: 16px 0;
+    box-shadow: var(--shadow);
+}
+
+.health-trend-chart-wrap canvas {
+    width: 100% !important;
+    max-height: 220px;
+}
+
+/* 건강 미션 */
+.mission-board {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 22px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+
+.mission-board h3 {
+    margin: 0 0 6px;
+    font-size: 1.15rem;
+    color: var(--text-color, #333);
+}
+
+.mission-group {
+    margin-top: 16px;
+}
+
+.mission-group-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mission-progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #eceff1;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-left: 8px;
+}
+
+.mission-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #66bb6a, #43a047);
+    border-radius: 6px;
+    transition: width 0.4s ease;
+}
+
+.mission-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mission-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    background: #fafafa;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    font-size: 0.92rem;
+}
+
+.mission-item:hover {
+    background: #f1f8e9;
+    border-color: #c5e1a5;
+}
+
+.mission-item.done {
+    background: #e8f5e9;
+    border-color: #a5d6a7;
+    color: #2e7d32;
+    text-decoration: line-through;
+    opacity: 0.85;
+}
+
+.mission-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #bdbdbd;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    color: transparent;
+    transition: all 0.2s;
+}
+
+.mission-item.done .mission-check {
+    background: #43a047;
+    border-color: #43a047;
+    color: #fff;
+}
+
+.mission-reward {
+    margin-left: auto;
+    font-size: 0.82rem;
+    color: #f9a825;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
 .health-tips {
     background: var(--white);
     border-radius: var(--border-radius);
