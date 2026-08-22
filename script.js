@@ -1629,13 +1629,108 @@ function showMyPage() {
 
     // 건강 점수 추이 그래프 렌더링
     renderHealthTrendChart(currentUser.healthRecords || []);
-    
+
+    // 건강 미션 렌더링
+    renderMissions();
+
     document.getElementById('mypage-modal').classList.add('active');
     document.body.style.overflow = 'hidden';
     
     // 드롭다운 닫기
     document.getElementById('user-dropdown').classList.remove('active');
 }
+
+// ===== 건강 미션 기능 =====
+// 미션 정의 (다국어 지원)
+const MISSION_DEFS = {
+    daily: [
+        { id: 'water',   reward: 10, text: { ko: '물 8잔 마시기', en: 'Drink 8 glasses of water', zh: '喝8杯水', ja: '水を8杯飲む' } },
+        { id: 'walk',    reward: 15, text: { ko: '30분 이상 걷기', en: 'Walk for 30+ minutes', zh: '步行30分钟以上', ja: '30分以上歩く' } },
+        { id: 'supp',    reward: 10, text: { ko: '추천 영양제 챙겨 먹기', en: 'Take recommended supplements', zh: '按时服用推荐营养品', ja: '推奨サプリを摂取する' } },
+        { id: 'sleep',   reward: 15, text: { ko: '7시간 이상 수면', en: 'Sleep 7+ hours', zh: '睡眠7小时以上', ja: '7時間以上睡眠' } }
+    ],
+    weekly: [
+        { id: 'checkup', reward: 30, text: { ko: '건강 체크 3회 완료', en: 'Complete 3 health checks', zh: '完成3次健康检查', ja: '健康チェックを3回完了' } },
+        { id: 'exercise',reward: 40, text: { ko: '운동 5일 실천', en: 'Exercise on 5 days', zh: '锻炼5天', ja: '5日間運動する' } },
+        { id: 'noSugar', reward: 30, text: { ko: '당분 절제 5일', en: 'Limit sugar for 5 days', zh: '控糖5天', ja: '5日間糖分を控える' } }
+    ]
+};
+
+// 오늘 날짜 문자열(일일) / 주차 키(주간)
+function getMissionDayKey() {
+    return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+}
+function getMissionWeekKey() {
+    const d = new Date();
+    const onejan = new Date(d.getFullYear(), 0, 1);
+    const week = Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+    return `${d.getFullYear()}-W${week}`;
+}
+
+// 저장된 미션 진행상태 로드/저장 (사용자별 + 기간별)
+function getMissionState() {
+    const uid = (typeof currentUser !== 'undefined' && currentUser && currentUser.email) ? currentUser.email : 'guest';
+    const raw = localStorage.getItem('missionState_' + uid);
+    let state = {};
+    try { state = raw ? JSON.parse(raw) : {}; } catch (e) { state = {}; }
+    const dayKey = getMissionDayKey();
+    const weekKey = getMissionWeekKey();
+    // 기간이 바뀌면 초기화
+    if (state.dayKey !== dayKey) { state.dayKey = dayKey; state.daily = {}; }
+    if (state.weekKey !== weekKey) { state.weekKey = weekKey; state.weekly = {}; }
+    if (!state.daily) state.daily = {};
+    if (!state.weekly) state.weekly = {};
+    return state;
+}
+function saveMissionState(state) {
+    const uid = (typeof currentUser !== 'undefined' && currentUser && currentUser.email) ? currentUser.email : 'guest';
+    localStorage.setItem('missionState_' + uid, JSON.stringify(state));
+}
+
+// 미션 토글
+function toggleMission(type, id) {
+    const state = getMissionState();
+    state[type][id] = !state[type][id];
+    saveMissionState(state);
+    renderMissions();
+}
+window.toggleMission = toggleMission;
+
+// 미션 렌더링
+function renderMissions() {
+    const container = document.getElementById('mission-board-content');
+    if (!container) return;
+    const lang = (typeof currentLanguage !== 'undefined') ? currentLanguage : 'ko';
+    const t = (typeof translations !== 'undefined' && translations[lang]) ? translations[lang] : {};
+    const state = getMissionState();
+
+    const buildGroup = (type, groupLabel) => {
+        const defs = MISSION_DEFS[type];
+        const doneCount = defs.filter(m => state[type][m.id]).length;
+        const pct = Math.round((doneCount / defs.length) * 100);
+        const doneWord = t['mission-done'] || '완료';
+        const items = defs.map(m => {
+            const done = !!state[type][m.id];
+            const label = m.text[lang] || m.text.ko;
+            return `<li class="mission-item ${done ? 'done' : ''}" onclick="toggleMission('${type}','${m.id}')">
+                <span class="mission-check">✓</span>
+                <span class="mission-text">${label}</span>
+                <span class="mission-reward">+${m.reward}P</span>
+            </li>`;
+        }).join('');
+        return `<div class="mission-group">
+            <div class="mission-group-title">${groupLabel} <span style="font-weight:400;color:#888;">(${doneCount}/${defs.length} ${doneWord})</span>
+                <span class="mission-progress-bar"><span class="mission-progress-fill" style="width:${pct}%;"></span></span>
+            </div>
+            <ul class="mission-list">${items}</ul>
+        </div>`;
+    };
+
+    container.innerHTML =
+        buildGroup('daily', t['mission-daily'] || '일일 미션') +
+        buildGroup('weekly', t['mission-weekly'] || '주간 미션');
+}
+window.renderMissions = renderMissions;
 
 // 건강 점수 추이 그래프
 let healthTrendChartInstance = null;
