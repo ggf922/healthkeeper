@@ -253,8 +253,8 @@ function checkReferralLink() {
 
 // 회원가입 모달 열기
 function showSignupModal() {
-    document.getElementById('signup-modal').classList.add('active');
-    document.body.style.overflow = 'hidden';
+    // 회원가입은 외부 사이트로 연결
+    window.location.href = 'https://modoo.auction/#/auth/register';
 }
 
 // 회원가입 모달 닫기
