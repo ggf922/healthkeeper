@@ -1679,20 +1679,48 @@ function applyTranslations() {
     const lang = currentLanguage || 'ko';
     const langData = translations[lang] || translations['en'] || translations['ko'];
     
+    // 허용된 인라인 서식 태그만 HTML로 렌더링 (신뢰된 번역 문구 전용)
+    const allowedTagRegex = /<\/?(?:strong|b|em|i|span|br)(?:\s[^>]*)?\/?>/gi;
+
     // data-i18n 속성이 있는 모든 요소에 번역 적용
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
         if (langData && langData[key]) {
             let translationText = langData[key];
-            
-            // <br> 태그를 공백으로 변환 (한 줄로 표시)
-            translationText = translationText.replace(/<br\s*\/?>/gi, ' ');
-            
-            if (element.tagName === 'INPUT' && element.type === 'text') {
-                element.placeholder = translationText;
-            } else if (element.tagName === 'INPUT' && element.type === 'submit') {
-                element.value = translationText;
+
+            // input 요소는 항상 순수 텍스트 (태그 제거)
+            if (element.tagName === 'INPUT') {
+                const plain = translationText
+                    .replace(/<br\s*\/?>/gi, ' ')
+                    .replace(/<[^>]+>/g, '');
+                if (element.type === 'text') {
+                    element.placeholder = plain;
+                } else if (element.type === 'submit') {
+                    element.value = plain;
+                } else {
+                    element.value = plain;
+                }
+                return;
+            }
+
+            // 서식 태그가 포함된 경우: 허용 태그만 남기고 나머지는 이스케이프 후 innerHTML
+            if (/<[a-z][\s\S]*>/i.test(translationText)) {
+                // 허용 태그를 임시 플레이스홀더로 보호
+                const stash = [];
+                let safe = translationText.replace(allowedTagRegex, (m) => {
+                    stash.push(m);
+                    return `\u0000${stash.length - 1}\u0000`;
+                });
+                // 나머지 < > & 이스케이프 (허용되지 않은 태그 무력화)
+                safe = safe
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+                // 보호했던 허용 태그 복원
+                safe = safe.replace(/\u0000(\d+)\u0000/g, (_, i) => stash[Number(i)]);
+                element.innerHTML = safe;
             } else {
+                // 태그가 전혀 없는 일반 문구는 안전하게 textContent
                 element.textContent = translationText;
             }
         }

@@ -2662,15 +2662,15 @@ async function initCamera() {
         setupCameraOverlay(step.type);
         updateCameraStatus('info', '카메라가 준비되었습니다. 안내에 따라 촬영해주세요.');
         
-        // 자동 측정 시작 (심박수는 15초, 나머지는 3초 후 자동 촬영)
+        // 심박수는 15초 자동 측정, 나머지(얼굴/혀/홍채)는 준비 후 카운트다운 촬영
         if (currentCameraStep === 0) {
             setTimeout(() => startHeartRateMeasurement(), 2000);
         } else {
-            // 비디오가 준비될 때까지 대기
+            // 비디오가 준비될 때까지 대기 후 촬영 준비 화면 표시
             const video = document.getElementById('video');
             const checkVideoReady = () => {
                 if (video.readyState >= 2) { // HAVE_CURRENT_DATA 이상
-                    setTimeout(() => captureAndAnalyze(step.type), 3000);
+                    prepareCapture(step.type);
                 } else {
                     setTimeout(checkVideoReady, 100);
                 }
@@ -2908,6 +2908,119 @@ function finishHeartRateMeasurement(measurements) {
     setTimeout(() => {
         moveToNextCameraStep();
     }, 1000);
+}
+
+// ===== 촬영 준비 / 카운트다운 (얼굴·혀·홍채) =====
+let captureCountdownTimer = null;      // setInterval 핸들
+let currentCaptureType = null;         // 현재 촬영 대상 type
+let isCapturing = false;               // 촬영 진행 중 여부
+
+// 단계별 준비 안내 문구
+function getCapturePrepMessage(type) {
+    switch (type) {
+        case 'face':   return '얼굴을 원형 가이드 안에 맞춰주세요. 준비되면 "지금 촬영"을 누르거나 잠시 후 자동 촬영됩니다.';
+        case 'tongue': return '혀를 최대한 내밀어 가이드 안에 맞춰주세요. 준비되면 "지금 촬영"을 누르거나 잠시 후 자동 촬영됩니다.';
+        case 'iris':   return '눈을 크게 뜨고 카메라 가이드에 맞춰주세요. 준비되면 "지금 촬영"을 누르거나 잠시 후 자동 촬영됩니다.';
+        default:       return '준비되면 "지금 촬영"을 누르거나 잠시 후 자동 촬영됩니다.';
+    }
+}
+
+// 촬영 준비 화면 표시 (자동 촬영 전 여유 시간 + 수동 버튼 제공)
+function prepareCapture(type) {
+    currentCaptureType = type;
+    isCapturing = false;
+
+    updateCameraStatus('info', getCapturePrepMessage(type));
+
+    // 수동 촬영 버튼 표시, 다시찍기 숨김
+    const captureBtn = document.getElementById('camera-capture-btn');
+    const retakeBtn = document.getElementById('camera-retake-btn');
+    if (captureBtn) captureBtn.style.display = 'inline-block';
+    if (retakeBtn) retakeBtn.style.display = 'none';
+
+    // 사용자가 자세를 잡을 수 있도록 3초 대기 후 카운트다운 시작
+    setTimeout(() => {
+        // 그 사이 수동 촬영했거나 단계가 바뀌었으면 중단
+        if (isCapturing || currentCaptureType !== type) return;
+        startCaptureCountdown(type, 5);
+    }, 3000);
+}
+
+// 촬영 카운트다운 (기본 5초) 후 자동 촬영
+function startCaptureCountdown(type, seconds) {
+    if (isCapturing) return;
+    clearInterval(captureCountdownTimer);
+
+    const countdownEl = document.getElementById('camera-countdown');
+    let remaining = seconds;
+
+    const render = () => {
+        if (!countdownEl) return;
+        countdownEl.style.display = 'flex';
+        countdownEl.innerHTML =
+            `<div class="count-number">${remaining}</div>` +
+            `<div class="count-label">촬영 준비… 가이드에 맞춰주세요</div>`;
+    };
+    render();
+
+    captureCountdownTimer = setInterval(() => {
+        remaining--;
+        if (remaining <= 0) {
+            clearInterval(captureCountdownTimer);
+            captureCountdownTimer = null;
+            triggerCapture(type);
+        } else {
+            render();
+        }
+    }, 1000);
+}
+
+// 실제 촬영 실행 (셔터 플래시 효과 포함)
+function triggerCapture(type) {
+    if (isCapturing) return;
+    isCapturing = true;
+    clearInterval(captureCountdownTimer);
+    captureCountdownTimer = null;
+
+    const countdownEl = document.getElementById('camera-countdown');
+    const captureBtn = document.getElementById('camera-capture-btn');
+    if (captureBtn) captureBtn.style.display = 'none';
+
+    // 셔터 플래시 효과
+    if (countdownEl) {
+        countdownEl.style.display = 'flex';
+        countdownEl.classList.add('flash');
+        countdownEl.innerHTML = `<div class="count-label">📸 촬영 완료!</div>`;
+        setTimeout(() => {
+            countdownEl.classList.remove('flash');
+            countdownEl.style.display = 'none';
+        }, 400);
+    }
+
+    captureAndAnalyze(type);
+}
+
+// "지금 촬영" 버튼 – 사용자가 준비되면 즉시 촬영
+function manualCapture() {
+    if (isCapturing || !currentCaptureType) return;
+    triggerCapture(currentCaptureType);
+}
+
+// "다시 찍기" 버튼 – 현재 단계를 다시 촬영
+function retakeCapture() {
+    const type = currentCaptureType;
+    if (!type) return;
+    // 이전 결과 초기화
+    if (type === 'face') cameraResults.faceAnalysis = null;
+    else if (type === 'tongue') cameraResults.tongueAnalysis = null;
+    else if (type === 'iris') cameraResults.irisAnalysis = null;
+
+    const retakeBtn = document.getElementById('camera-retake-btn');
+    if (retakeBtn) retakeBtn.style.display = 'none';
+
+    // 카메라 재시작 없이 준비 화면부터 다시
+    isCapturing = false;
+    prepareCapture(type);
 }
 
 // 촬영 및 분석
@@ -3357,9 +3470,30 @@ function stopCamera() {
     }
 }
 
+// 카운트다운/촬영 상태 초기화 (단계 전환 시 호출)
+function resetCaptureState() {
+    if (captureCountdownTimer) {
+        clearInterval(captureCountdownTimer);
+        captureCountdownTimer = null;
+    }
+    isCapturing = false;
+    currentCaptureType = null;
+    const countdownEl = document.getElementById('camera-countdown');
+    if (countdownEl) {
+        countdownEl.style.display = 'none';
+        countdownEl.classList.remove('flash');
+        countdownEl.innerHTML = '';
+    }
+    const captureBtn = document.getElementById('camera-capture-btn');
+    const retakeBtn = document.getElementById('camera-retake-btn');
+    if (captureBtn) captureBtn.style.display = 'none';
+    if (retakeBtn) retakeBtn.style.display = 'none';
+}
+
 // 다음 카메라 단계로
 function moveToNextCameraStep() {
     // 카메라 완전히 종료 대기
+    resetCaptureState();
     stopCamera();
     
     // 약간의 지연 후 다음 단계로 (카메라 스트림이 완전히 종료되도록)
@@ -3385,6 +3519,7 @@ function skipCurrentCameraCheck() {
     // 화면 플래시 끄기
     disableScreenFlash();
     
+    resetCaptureState();
     stopCamera();
     
     // 현재 단계 결과를 null로 설정
