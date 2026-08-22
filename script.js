@@ -687,37 +687,48 @@ function performAnalysis() {
     let recommendations = [];
     let tips = [];
     let summaryItems = [];
+    let scoreBreakdown = []; // 점수 산출 근거
+
+    // 점수 근거 라벨 (다국어)
+    const sbLabels = {
+        ko: { sleepLack: '수면 부족', exerciseLack: '운동 부족', dietPoor: '불규칙한 식사', stressHigh: '높은 스트레스', sleepGood: '충분한 수면', exerciseGood: '규칙적인 운동', heartAbnormal: '심박수 정상 범위 이탈', facePoor: '혈색 저하', tongueWarn: '혀 상태 주의', irisWarn: '홍채 상태 주의' },
+        en: { sleepLack: 'Insufficient sleep', exerciseLack: 'Lack of exercise', dietPoor: 'Irregular meals', stressHigh: 'High stress', sleepGood: 'Adequate sleep', exerciseGood: 'Regular exercise', heartAbnormal: 'Heart rate out of normal range', facePoor: 'Poor complexion', tongueWarn: 'Tongue needs attention', irisWarn: 'Iris needs attention' },
+        zh: { sleepLack: '睡眠不足', exerciseLack: '缺乏运动', dietPoor: '饮食不规律', stressHigh: '压力较高', sleepGood: '充足睡眠', exerciseGood: '规律运动', heartAbnormal: '心率超出正常范围', facePoor: '气色不佳', tongueWarn: '舌象需注意', irisWarn: '虹膜需注意' },
+        ja: { sleepLack: '睡眠不足', exerciseLack: '運動不足', dietPoor: '不規則な食事', stressHigh: '高いストレス', sleepGood: '十分な睡眠', exerciseGood: '規則的な運動', heartAbnormal: '心拍数が正常範囲外', facePoor: '血色の低下', tongueWarn: '舌の状態に注意', irisWarn: '虹彩の状態に注意' }
+    };
+    const sbl = sbLabels[currentLanguage] || sbLabels.ko;
+    const addScore = (delta, label) => { healthScore += delta; scoreBreakdown.push({ delta, label }); };
     
     // 건강 점수 계산
-    if (sleep === 'less5' || sleep === '5to6') healthScore -= 15;
-    if (exercise === 'none' || exercise === 'rarely') healthScore -= 15;
-    if (diet === 'irregular' || diet === 'skip') healthScore -= 10;
-    if (stress === 'very_high' || stress === 'high') healthScore -= 20;
-    if (sleep === '7to8' || sleep === 'more8') healthScore += 5;
-    if (exercise === 'often' || exercise === 'daily') healthScore += 5;
+    if (sleep === 'less5' || sleep === '5to6') addScore(-15, sbl.sleepLack);
+    if (exercise === 'none' || exercise === 'rarely') addScore(-15, sbl.exerciseLack);
+    if (diet === 'irregular' || diet === 'skip') addScore(-10, sbl.dietPoor);
+    if (stress === 'very_high' || stress === 'high') addScore(-20, sbl.stressHigh);
+    if (sleep === '7to8' || sleep === 'more8') addScore(5, sbl.sleepGood);
+    if (exercise === 'often' || exercise === 'daily') addScore(5, sbl.exerciseGood);
     
     // 카메라 결과 반영
     if (cameraResults.heartRate) {
         if (cameraResults.heartRate < 60 || cameraResults.heartRate > 100) {
-            healthScore -= 10;
+            addScore(-10, sbl.heartAbnormal);
         }
     }
     
     if (cameraResults.faceAnalysis) {
         if (cameraResults.faceAnalysis.complexion.level === 'poor') {
-            healthScore -= 5;
+            addScore(-5, sbl['facePoor']);
         }
     }
     
     if (cameraResults.tongueAnalysis) {
         if (cameraResults.tongueAnalysis.status === 'warning') {
-            healthScore -= 5;
+            addScore(-5, sbl.tongueWarn);
         }
     }
     
     if (cameraResults.irisAnalysis) {
         if (cameraResults.irisAnalysis.status === 'warning') {
-            healthScore -= 5;
+            addScore(-5, sbl.irisWarn);
         }
     }
     
@@ -1009,8 +1020,32 @@ function performAnalysis() {
         healthScore,
         recommendations: recommendations.slice(0, 6), // 상위 6개만
         summaryItems,
-        tips
+        tips,
+        scoreBreakdown
     };
+}
+
+// 건강 점수 산출 근거 렌더링
+function renderScoreBreakdown(breakdown) {
+    if (!breakdown || breakdown.length === 0) return '';
+    const titles = {
+        ko: '📊 점수 산출 근거 (기본 100점에서 시작)',
+        en: '📊 How your score was calculated (starts from 100)',
+        zh: '📊 分数计算依据（从100分开始）',
+        ja: '📊 スコアの算出根拠（100点から開始）'
+    };
+    const title = titles[currentLanguage] || titles.ko;
+    let items = breakdown.map(b => {
+        const sign = b.delta > 0 ? '+' : '';
+        const cls = b.delta > 0 ? 'score-plus' : 'score-minus';
+        return `<li class="${cls}"><span class="sb-label">${b.label}</span><span class="sb-delta">${sign}${b.delta}</span></li>`;
+    }).join('');
+    return `
+        <div class="score-breakdown">
+            <h4>${title}</h4>
+            <ul class="score-breakdown-list">${items}</ul>
+        </div>
+    `;
 }
 
 // 결과 표시
@@ -1098,6 +1133,7 @@ function displayResults(analysis) {
                 <span class="zone-excellent">우수</span>
             </div>
         </div>
+        ${renderScoreBreakdown(analysis.scoreBreakdown)}
     `;
     
     // AI 분석 결과 표시
@@ -1400,24 +1436,32 @@ function displayResults(analysis) {
     // 추천 영양제
     let supplementHTML = '';
     const priorityTexts = {
-        ko: { high: '필수', medium: '권장', low: '선택', dosage: '복용법' },
-        en: { high: 'Essential', medium: 'Recommended', low: 'Optional', dosage: 'Dosage' },
-        zh: { high: '必需', medium: '推荐', low: '可选', dosage: '服用方法' },
-        ja: { high: '必須', medium: '推奨', low: 'オプション', dosage: '服用方法' }
+        ko: { high: '필수', medium: '권장', low: '선택', dosage: '복용법', caution: '주의사항', evidence: '참고 근거', synergy: '함께 먹으면 좋아요' },
+        en: { high: 'Essential', medium: 'Recommended', low: 'Optional', dosage: 'Dosage', caution: 'Caution', evidence: 'Reference', synergy: 'Good to combine with' },
+        zh: { high: '必需', medium: '推荐', low: '可选', dosage: '服用方法', caution: '注意事项', evidence: '参考依据', synergy: '搭配服用更好' },
+        ja: { high: '必須', medium: '推奨', low: 'オプション', dosage: '服用方法', caution: '注意事項', evidence: '参考根拠', synergy: '一緒に摂ると良い' }
     };
+    const pt = priorityTexts[currentLanguage];
     
     analysis.recommendations.forEach(rec => {
-        const priorityText = priorityTexts[currentLanguage][rec.priority];
+        const priorityText = pt[rec.priority];
+        const s = rec.supplement;
+        const cautionHTML = s.caution ? `<p class="caution">⚠️ <strong>${pt.caution}:</strong> ${s.caution}</p>` : '';
+        const synergyHTML = (s.synergy && s.synergy.length) ? `<p class="synergy">🤝 <strong>${pt.synergy}:</strong> ${s.synergy.join(', ')}</p>` : '';
+        const evidenceHTML = s.evidence ? `<p class="evidence">📚 <strong>${pt.evidence}:</strong> ${s.evidence}</p>` : '';
         supplementHTML += `
             <div class="supplement-card">
                 <h4>
-                    <span>${rec.supplement.icon}</span>
-                    ${rec.supplement.name}
+                    <span>${s.icon}</span>
+                    ${s.name}
                     <span class="priority ${rec.priority}">${priorityText}</span>
                 </h4>
                 <p>${rec.reason}</p>
-                <p class="benefit">💡 ${rec.supplement.benefits}</p>
-                <p class="dosage">📋 ${priorityTexts[currentLanguage].dosage}: ${rec.supplement.dosage}</p>
+                <p class="benefit">💡 ${s.benefits}</p>
+                <p class="dosage">📋 ${pt.dosage}: ${s.dosage}</p>
+                ${cautionHTML}
+                ${synergyHTML}
+                ${evidenceHTML}
             </div>
         `;
     });

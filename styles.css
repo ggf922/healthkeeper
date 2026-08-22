@@ -1015,6 +1015,104 @@ header h1 {
     font-style: italic;
 }
 
+.supplement-card .caution {
+    background: rgba(255, 82, 82, 0.25);
+    border-left: 3px solid #ff5252;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    margin-top: 12px;
+}
+
+.supplement-card .synergy {
+    background: rgba(102, 187, 106, 0.25);
+    border-left: 3px solid #66bb6a;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+}
+
+.supplement-card .evidence {
+    font-size: 0.8rem;
+    opacity: 0.75;
+    margin-top: 4px;
+}
+
+/* 건강 점수 산출 근거 */
+.score-breakdown {
+    margin-top: 25px;
+    background: #f8f9fb;
+    border-radius: 12px;
+    padding: 18px 20px;
+    text-align: left;
+}
+
+.score-breakdown h4 {
+    font-size: 1rem;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+}
+
+.score-breakdown-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.score-breakdown-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed #e0e0e0;
+    font-size: 0.92rem;
+}
+
+.score-breakdown-list li:last-child {
+    border-bottom: none;
+}
+
+.score-breakdown-list .sb-delta {
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 12px;
+}
+
+.score-breakdown-list .score-plus .sb-delta {
+    color: #2e7d32;
+    background: rgba(76, 175, 80, 0.15);
+}
+
+.score-breakdown-list .score-minus .sb-delta {
+    color: #c62828;
+    background: rgba(244, 67, 54, 0.12);
+}
+
+/* 의학적 면책 배너 */
+.medical-disclaimer {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-left: 4px solid #ffa000;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 20px 0;
+}
+
+.medical-disclaimer .disclaimer-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.medical-disclaimer p {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: #6d4c41;
+    margin: 0;
+}
+
 .health-tips {
     background: var(--white);
     border-radius: var(--border-radius);
