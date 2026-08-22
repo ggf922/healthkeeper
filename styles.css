@@ -9,21 +9,40 @@
     --primary-color: #4CAF50;
     --secondary-color: #2196F3;
     --accent-color: #FF9800;
-    --text-dark: #333;
-    --text-light: #666;
+    --text-dark: #1e293b;
+    --text-light: #64748b;
     --background: #f5f7fa;
     --white: #ffffff;
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
-    --border-radius: 16px;
+    --border-radius: 20px;
+
+    /* 프리미엄 디자인 토큰 */
+    --brand-gradient: linear-gradient(135deg, #6d5efc 0%, #8b5cf6 45%, #d946a8 100%);
+    --brand-gradient-soft: linear-gradient(135deg, #7c6ffd 0%, #9d6bf0 100%);
+    --gold-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    --glass-bg: rgba(255, 255, 255, 0.14);
+    --glass-border: rgba(255, 255, 255, 0.28);
+    --shadow-soft: 0 10px 40px rgba(31, 38, 135, 0.18);
+    --shadow-premium: 0 20px 60px rgba(76, 29, 149, 0.28);
+    --shadow-card: 0 18px 50px rgba(30, 41, 59, 0.12);
+    --radius-lg: 28px;
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', '맑은 고딕', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background:
+        radial-gradient(circle at 15% 15%, rgba(217, 70, 168, 0.35) 0%, transparent 42%),
+        radial-gradient(circle at 85% 20%, rgba(56, 189, 248, 0.28) 0%, transparent 45%),
+        radial-gradient(circle at 50% 100%, rgba(124, 58, 237, 0.35) 0%, transparent 55%),
+        linear-gradient(135deg, #4c1d95 0%, #6d28d9 45%, #7c3aed 100%);
+    background-attachment: fixed;
     min-height: 100vh;
     padding: 20px;
     line-height: 1.6;
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .container {
@@ -51,14 +70,20 @@ header {
 }
 
 header h1 {
-    font-size: 2.5rem;
+    font-size: 2.6rem;
     margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #fff;
+    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
 }
 
 .subtitle {
     font-size: 1.1rem;
-    opacity: 0.95;
+    opacity: 0.9;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+    color: rgba(255, 255, 255, 0.92);
 }
 
 .header-actions {
@@ -68,36 +93,79 @@ header h1 {
     flex-wrap: wrap;
 }
 
-/* 언어 선택 */
+/* 언어 선택 - 드롭다운 콤보 */
 .language-selector {
     display: flex;
-    gap: 5px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 5px;
-    border-radius: 25px;
-    backdrop-filter: blur(10px);
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.14);
+    padding: 6px 14px;
+    border-radius: 50px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
 }
 
-.lang-btn {
+.language-selector:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.lang-globe {
+    font-size: 1.05rem;
+    line-height: 1;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+}
+
+.lang-select {
     background: transparent;
     border: none;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.lang-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.lang-btn.active {
-    background: rgba(255, 255, 255, 0.95);
-    color: #667eea;
+    color: #fff;
+    font-size: 0.92rem;
     font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    padding-right: 4px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right center;
+    padding-right: 20px;
+    letter-spacing: 0.2px;
+}
+
+.lang-select option {
+    color: #333;
+    background: #fff;
+    font-weight: 500;
+    padding: 8px;
+}
+
+/* RTL(아랍어) 지원 */
+body.rtl .header-content,
+body.rtl .header-actions {
+    direction: rtl;
+}
+body.rtl .language-selector {
+    flex-direction: row-reverse;
+}
+body.rtl .lang-select {
+    background-position: left center;
+    padding-right: 4px;
+    padding-left: 20px;
+}
+body.rtl .welcome-card,
+body.rtl .benefit-list,
+body.rtl .options,
+body.rtl .result-card {
+    text-align: right;
+}
+body.rtl .benefit-list li {
+    direction: rtl;
 }
 
 .help-btn {
@@ -153,13 +221,17 @@ header h1 {
 }
 
 .btn-auth-primary {
-    background: rgba(255, 255, 255, 0.95);
-    color: #667eea;
+    background: var(--gold-gradient);
+    border-color: transparent;
+    color: #7c3a1d;
+    font-weight: 700;
+    box-shadow: 0 6px 18px rgba(253, 160, 133, 0.4);
 }
 
 .btn-auth-primary:hover {
-    background: white;
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.4);
+    background: var(--gold-gradient);
+    filter: brightness(1.05);
+    box-shadow: 0 10px 26px rgba(253, 160, 133, 0.55);
 }
 
 /* 사용자 메뉴 */
@@ -257,41 +329,84 @@ header h1 {
 .welcome-card,
 .survey-card,
 .loading-card {
-    background: var(--white);
-    border-radius: var(--border-radius);
-    padding: 40px 30px;
-    box-shadow: var(--shadow-lg);
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: var(--radius-lg);
+    padding: 48px 36px;
+    box-shadow: var(--shadow-card);
     text-align: center;
     margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(6px);
+}
+
+/* 카드 상단 고급스러운 그라데이션 액센트 라인 */
+.welcome-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: var(--brand-gradient);
+    background-size: 200% 100%;
+    animation: shimmerLine 6s linear infinite;
+}
+
+@keyframes shimmerLine {
+    0% { background-position: 0% 0; }
+    100% { background-position: 200% 0; }
 }
 
 .welcome-card .icon {
-    font-size: 4rem;
-    margin-bottom: 20px;
-    animation: bounce 2s infinite;
+    font-size: 4.2rem;
+    margin-bottom: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(217, 70, 168, 0.12) 100%);
+    box-shadow: inset 0 2px 10px rgba(139, 92, 246, 0.12), 0 10px 30px rgba(139, 92, 246, 0.18);
+    animation: floatIcon 3.5s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
 }
 
 .welcome-card h2 {
     color: var(--text-dark);
-    font-size: 1.8rem;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
     margin-bottom: 15px;
+    background: linear-gradient(135deg, #1e293b 0%, #6d28d9 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .welcome-card p {
     color: var(--text-light);
-    font-size: 1.1rem;
+    font-size: 1.08rem;
     line-height: 1.8;
     margin-bottom: 30px;
 }
 
 .welcome-features {
-    background: rgba(255, 255, 255, 0.15);
-    padding: 15px 20px;
-    border-radius: 15px;
-    font-size: 0.95rem !important;
-    margin-bottom: 25px !important;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, rgba(109, 94, 252, 0.08) 0%, rgba(217, 70, 168, 0.08) 100%);
+    padding: 16px 22px;
+    border-radius: 16px;
+    font-size: 0.98rem !important;
+    font-weight: 600;
+    color: #6d28d9 !important;
+    margin-bottom: 28px !important;
+    border: 1px solid rgba(139, 92, 246, 0.18);
+    box-shadow: inset 0 1px 3px rgba(139, 92, 246, 0.06);
 }
 
 /* 회원가입 혜택 박스 */
@@ -449,37 +564,73 @@ header h1 {
 }
 
 .feature-item {
-    background: var(--white);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
+    background: rgba(255, 255, 255, 0.96);
+    padding: 26px 20px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-card);
     text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(109, 94, 252, 0.06) 0%, rgba(217, 70, 168, 0.06) 100%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-premium);
+}
+
+.feature-item:hover::before {
+    opacity: 1;
 }
 
 .feature-item .emoji {
-    font-size: 2.5rem;
-    display: block;
-    margin-bottom: 10px;
+    font-size: 2.6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    margin-bottom: 14px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(109, 94, 252, 0.12) 0%, rgba(217, 70, 168, 0.12) 100%);
+    position: relative;
+    z-index: 1;
 }
 
 .feature-item h3 {
     color: var(--text-dark);
-    font-size: 1rem;
-    margin-bottom: 5px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
 }
 
 .feature-item p {
     color: var(--text-light);
     font-size: 0.9rem;
+    position: relative;
+    z-index: 1;
 }
 
 /* 카메라 기능 소개 섹션 */
 .camera-features-section {
-    background: var(--white);
-    padding: 30px;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
+    background: rgba(255, 255, 255, 0.97);
+    padding: 36px 30px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
     margin: 30px 0;
+    border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 /* 의사 소개 섹션 */
@@ -565,7 +716,9 @@ header h1 {
 
 .section-title {
     color: var(--text-dark);
-    font-size: 1.5rem;
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: -0.3px;
     margin-bottom: 10px;
     text-align: center;
 }
@@ -585,23 +738,31 @@ header h1 {
 }
 
 .camera-feature-card {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    padding: 25px;
-    border-radius: 16px;
+    background: linear-gradient(135deg, #fbfaff 0%, #f0edfb 100%);
+    padding: 28px 24px;
+    border-radius: 20px;
     text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: var(--shadow);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    box-shadow: 0 8px 24px rgba(30, 41, 59, 0.06);
+    border: 1px solid rgba(139, 92, 246, 0.1);
 }
 
 .camera-feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-premium);
+    border-color: rgba(139, 92, 246, 0.25);
 }
 
 .camera-feature-icon {
-    font-size: 3rem;
+    font-size: 2.6rem;
     margin-bottom: 15px;
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 74px;
+    height: 74px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(109, 94, 252, 0.14) 0%, rgba(217, 70, 168, 0.14) 100%);
 }
 
 .camera-feature-card h4 {
@@ -725,19 +886,43 @@ header h1 {
 }
 
 .btn-primary {
-    background: var(--primary-color);
+    background: var(--brand-gradient);
+    background-size: 180% 180%;
     color: white;
-    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    padding: 17px 40px;
+    border-radius: 50px;
+    box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.35s ease;
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.45), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
 }
 
 .btn-primary:hover:not(:disabled) {
-    background: #45a049;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    background-position: 100% 100%;
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px rgba(124, 58, 237, 0.5);
+}
+
+.btn-primary:hover:not(:disabled)::after {
+    left: 130%;
 }
 
 .btn-primary:disabled {
-    background: #ccc;
+    background: #cbd5e1;
     cursor: not-allowed;
     box-shadow: none;
 }
@@ -2938,6 +3123,32 @@ footer {
     margin-top: 10px;
     font-weight: 600;
     color: var(--text-dark);
+}
+
+/* 회사 정보 */
+.company-info {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    color: var(--text-light);
+    line-height: 1.9;
+}
+
+.company-info .company-name {
+    font-weight: 700;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+}
+
+.company-info .company-line {
+    font-size: 0.82rem;
+    margin: 2px 0;
+}
+
+.company-info .company-line span {
+    color: var(--text-dark);
+    font-weight: 500;
 }
 
 /* 애니메이션 */

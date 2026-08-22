@@ -3449,14 +3449,29 @@ document.addEventListener('keydown', (e) => {
 // ==================== 다국어 지원 ====================
 
 // 언어 변경
+// RTL(오른쪽→왼쪽) 언어 목록
+const RTL_LANGUAGES = ['ar'];
+
+// 문서 방향(dir) 및 언어 속성 적용
+function applyDocumentDirection(lang) {
+    const isRtl = RTL_LANGUAGES.includes(lang);
+    document.documentElement.setAttribute('lang', lang);
+    document.documentElement.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+    document.body.classList.toggle('rtl', isRtl);
+}
+
 function changeLanguage(lang) {
     saveLanguage(lang);
     currentLanguage = lang;
     
-    // 언어 버튼 활성화
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === lang);
-    });
+    // 드롭다운 선택값 동기화
+    const langSelect = document.getElementById('language-select');
+    if (langSelect && langSelect.value !== lang) {
+        langSelect.value = lang;
+    }
+
+    // 문서 방향(RTL/LTR) 적용
+    applyDocumentDirection(lang);
 
     // 건강 칼럼 재렌더링 (언어 반영)
     if (typeof renderHealthColumns === 'function') {
@@ -3645,9 +3660,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 언어 로드
     currentLanguage = getCurrentLanguage();
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === currentLanguage);
-    });
+    const langSelectInit = document.getElementById('language-select');
+    if (langSelectInit) {
+        langSelectInit.value = currentLanguage;
+    }
+    // 문서 방향(RTL/LTR) 적용
+    applyDocumentDirection(currentLanguage);
     
     // 번역 적용 (즉시 실행)
     if (typeof applyTranslations === 'function') {
