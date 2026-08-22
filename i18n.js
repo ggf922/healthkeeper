@@ -3,7 +3,7 @@
 const translations = {
     ko: {
         // 앱 기본
-        'app-title': '🏥 건강 100세',
+        'app-title': '건강 100세',
         'app-subtitle': '나만의 맞춤형 건강식품 추천 서비스',
         
         // 메뉴
@@ -122,7 +122,7 @@ const translations = {
     },
     
     en: {
-        'app-title': '🏥 Health 100',
+        'app-title': 'Health 100',
         'app-subtitle': 'Personalized Health Supplement Recommendation Service',
         
         'menu-records': 'My Records',
@@ -233,7 +233,7 @@ const translations = {
     },
     
     zh: {
-        'app-title': '🏥 健康100岁',
+        'app-title': '健康100岁',
         'app-subtitle': '个性化健康食品推荐服务',
         
         'menu-records': '我的记录',
@@ -344,7 +344,7 @@ const translations = {
     },
     
     ja: {
-        'app-title': '🏥 健康100歳',
+        'app-title': '健康100歳',
         'app-subtitle': 'オーダーメイド健康食品推奨サービス',
         
         'menu-records': 'マイ記録',
@@ -455,7 +455,7 @@ const translations = {
     },
 
     es: {
-        'app-title': '🏥 Salud 100',
+        'app-title': 'Salud 100',
         'app-subtitle': 'Servicio personalizado de recomendación de suplementos',
         'menu-records': 'Mis registros',
         'menu-ai-count': 'Chequeos IA',
@@ -550,7 +550,7 @@ const translations = {
     },
 
     fr: {
-        'app-title': '🏥 Santé 100',
+        'app-title': 'Santé 100',
         'app-subtitle': 'Service personnalisé de recommandation de compléments',
         'menu-records': 'Mes dossiers',
         'menu-ai-count': 'Analyses IA',
@@ -645,7 +645,7 @@ const translations = {
     },
 
     ru: {
-        'app-title': '🏥 Здоровье 100',
+        'app-title': 'Здоровье 100',
         'app-subtitle': 'Персональный сервис рекомендаций добавок',
         'menu-records': 'Мои записи',
         'menu-ai-count': 'ИИ-проверки',
@@ -740,7 +740,7 @@ const translations = {
     },
 
     ar: {
-        'app-title': '🏥 صحة 100',
+        'app-title': 'صحة 100',
         'app-subtitle': 'خدمة مخصصة للتوصية بالمكملات الغذائية',
         'menu-records': 'سجلاتي',
         'menu-ai-count': 'فحوصات الذكاء الاصطناعي',

@@ -69,6 +69,53 @@ header {
     text-align: center;
 }
 
+/* 브랜드 로고 영역 */
+.header-content > div.brand {
+    text-align: left;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-align: left;
+    justify-content: flex-start;
+}
+
+.brand-logo {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: 15px;
+    filter: drop-shadow(0 6px 16px rgba(124, 58, 237, 0.45));
+    transition: transform 0.35s ease;
+}
+
+.brand-logo:hover {
+    transform: scale(1.06) rotate(-3deg);
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
+}
+
+.brand-text h1 {
+    margin-bottom: 2px;
+    font-size: 2.1rem;
+    line-height: 1.15;
+}
+
+.brand-text .subtitle {
+    margin: 0;
+}
+
+body.rtl .brand {
+    text-align: right;
+    flex-direction: row-reverse;
+}
+
 header h1 {
     font-size: 2.6rem;
     margin-bottom: 10px;
@@ -384,6 +431,7 @@ body.rtl .benefit-list li {
     font-weight: 800;
     letter-spacing: -0.5px;
     margin-bottom: 15px;
+    word-break: keep-all;
     background: linear-gradient(135deg, #1e293b 0%, #6d28d9 100%);
     -webkit-background-clip: text;
     background-clip: text;
@@ -395,11 +443,17 @@ body.rtl .benefit-list li {
     font-size: 1.08rem;
     line-height: 1.8;
     margin-bottom: 30px;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    max-width: 460px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .welcome-features {
+    display: inline-block;
     background: linear-gradient(135deg, rgba(109, 94, 252, 0.08) 0%, rgba(217, 70, 168, 0.08) 100%);
-    padding: 16px 22px;
+    padding: 16px 24px;
     border-radius: 16px;
     font-size: 0.98rem !important;
     font-weight: 600;
@@ -407,6 +461,8 @@ body.rtl .benefit-list li {
     margin-bottom: 28px !important;
     border: 1px solid rgba(139, 92, 246, 0.18);
     box-shadow: inset 0 1px 3px rgba(139, 92, 246, 0.06);
+    word-break: keep-all;
+    line-height: 1.7;
 }
 
 /* 회원가입 혜택 박스 */
@@ -3151,10 +3207,12 @@ footer::after {
 .footer-notice {
     position: relative;
     z-index: 1;
-    max-width: 520px;
+    max-width: 460px;
     margin: 0 auto;
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.6);
+    word-break: keep-all;
+    line-height: 1.7;
 }
 
 .copyright {
@@ -3193,15 +3251,11 @@ footer::after {
 }
 
 .company-brand-mark {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     width: 38px;
     height: 38px;
-    border-radius: 12px;
-    font-size: 1.2rem;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(217, 70, 168, 0.3) 100%);
-    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.25);
+    border-radius: 11px;
+    object-fit: contain;
+    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
 }
 
 .company-info .company-name {
@@ -3245,6 +3299,7 @@ footer::after {
     font-weight: 500;
     color: rgba(255, 255, 255, 0.9);
     line-height: 1.5;
+    word-break: keep-all;
 }
 
 /* RTL 푸터 정렬 */
@@ -3312,6 +3367,25 @@ body.rtl .company-grid { text-align: right; }
     .header-content {
         flex-direction: column;
         gap: 15px;
+    }
+
+    .brand,
+    .header-content > div.brand {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .brand-text {
+        white-space: normal;
+    }
+
+    .brand-text h1 {
+        font-size: 1.9rem;
+    }
+
+    .brand-logo {
+        width: 46px;
+        height: 46px;
     }
 
     .header-actions {
