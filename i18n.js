@@ -84,6 +84,11 @@ const translations = {
         'mission-weekly': '주간 미션',
         'mission-done': '완료',
         'mission-progress': '진행률',
+        'column-title': '📚 건강 칼럼 & 팁',
+        'column-subtitle': '전문가가 정리한 건강 정보를 확인해 보세요',
+        'column-readmore': '자세히 보기 →',
+        'combo-title': '🤝 추천 영양제 조합',
+        'combo-subtitle': '함께 섭취하면 흡수·효과가 상승하는 조합입니다',
         'shopping-title': '건강 100세 쇼핑몰',
         'shopping-desc': '추천된 영양제를 편리하게 구매하세요!',
         'shopping-btn': '쇼핑몰 바로가기',
@@ -189,6 +194,11 @@ const translations = {
         'mission-weekly': 'Weekly Missions',
         'mission-done': 'Done',
         'mission-progress': 'Progress',
+        'column-title': '📚 Health Columns & Tips',
+        'column-subtitle': 'Check out health information curated by experts',
+        'column-readmore': 'Read more →',
+        'combo-title': '🤝 Recommended Supplement Combinations',
+        'combo-subtitle': 'Combinations that boost absorption and effect when taken together',
         'shopping-title': 'Health 100 Shop',
         'shopping-desc': 'Conveniently purchase recommended supplements!',
         'shopping-btn': 'Visit Shop',
@@ -291,6 +301,11 @@ const translations = {
         'mission-weekly': '每周任务',
         'mission-done': '完成',
         'mission-progress': '进度',
+        'column-title': '📚 健康专栏 & 贴士',
+        'column-subtitle': '查看专家整理的健康信息',
+        'column-readmore': '查看详情 →',
+        'combo-title': '🤝 推荐营养品搭配',
+        'combo-subtitle': '一起服用可提升吸收和效果的搭配',
         'shopping-title': '健康100岁商城',
         'shopping-desc': '方便购买推荐的营养品！',
         'shopping-btn': '访问商城',
@@ -393,6 +408,11 @@ const translations = {
         'mission-weekly': 'ウィークリーミッション',
         'mission-done': '完了',
         'mission-progress': '進捗',
+        'column-title': '📚 健康コラム & ヒント',
+        'column-subtitle': '専門家がまとめた健康情報をご確認ください',
+        'column-readmore': '詳しく見る →',
+        'combo-title': '🤝 おすすめサプリの組み合わせ',
+        'combo-subtitle': '一緒に摂ると吸収・効果が高まる組み合わせです',
         'shopping-title': '健康100歳ショップ',
         'shopping-desc': '推奨されたサプリメントを便利に購入！',
         'shopping-btn': 'ショップへ',
@@ -567,6 +587,52 @@ const surveyTranslations = {
                     { label: "2-3가지", icon: "💊💊" },
                     { label: "4가지 이상", icon: "💊💊💊" }
                 ]
+            },
+            {
+                question: "하루 물 섭취량은 어느 정도인가요?",
+                options: [
+                    { label: "1잔 이하", icon: "🥃" },
+                    { label: "2-4잔", icon: "🥤" },
+                    { label: "5-7잔", icon: "💧" },
+                    { label: "8잔 이상", icon: "🌊" }
+                ]
+            },
+            {
+                question: "카페인 음료(커피/에너지음료)를 얼마나 드시나요?",
+                options: [
+                    { label: "안 마심", icon: "🚫" },
+                    { label: "하루 1잔", icon: "☕" },
+                    { label: "하루 2-3잔", icon: "☕☕" },
+                    { label: "하루 4잔 이상", icon: "☕☕☕" }
+                ]
+            },
+            {
+                question: "흡연/음주 습관은 어떤가요?",
+                options: [
+                    { label: "둘 다 안 함", icon: "🌿" },
+                    { label: "가끔 음주", icon: "🍷" },
+                    { label: "자주 음주", icon: "🍺" },
+                    { label: "흡연 및 음주", icon: "🚬" }
+                ]
+            },
+            {
+                question: "하루 중 앉아있는 시간은 얼마나 되나요?",
+                options: [
+                    { label: "4시간 미만", icon: "🚶" },
+                    { label: "4-7시간", icon: "🪑" },
+                    { label: "8-10시간", icon: "💺" },
+                    { label: "10시간 이상", icon: "🖥️" }
+                ]
+            },
+            {
+                question: "건강 관리의 주요 목표는 무엇인가요?",
+                options: [
+                    { label: "활력/에너지 증진", icon: "⚡" },
+                    { label: "체중 관리", icon: "⚖️" },
+                    { label: "면역력 강화", icon: "🛡️" },
+                    { label: "노화 예방/안티에이징", icon: "🌟" },
+                    { label: "질병 예방", icon: "🩺" }
+                ]
             }
         ]
     },
@@ -647,6 +713,52 @@ const surveyTranslations = {
                     { label: "1 type", icon: "💊" },
                     { label: "2-3 types", icon: "💊💊" },
                     { label: "4+ types", icon: "💊💊💊" }
+                ]
+            },
+            {
+                question: "How much water do you drink daily?",
+                options: [
+                    { label: "1 glass or less", icon: "🥃" },
+                    { label: "2-4 glasses", icon: "🥤" },
+                    { label: "5-7 glasses", icon: "💧" },
+                    { label: "8+ glasses", icon: "🌊" }
+                ]
+            },
+            {
+                question: "How much caffeine (coffee/energy drinks) do you consume?",
+                options: [
+                    { label: "None", icon: "🚫" },
+                    { label: "1 cup/day", icon: "☕" },
+                    { label: "2-3 cups/day", icon: "☕☕" },
+                    { label: "4+ cups/day", icon: "☕☕☕" }
+                ]
+            },
+            {
+                question: "What are your smoking/drinking habits?",
+                options: [
+                    { label: "Neither", icon: "🌿" },
+                    { label: "Occasional drinking", icon: "🍷" },
+                    { label: "Frequent drinking", icon: "🍺" },
+                    { label: "Smoking & drinking", icon: "🚬" }
+                ]
+            },
+            {
+                question: "How many hours do you sit per day?",
+                options: [
+                    { label: "Under 4 hours", icon: "🚶" },
+                    { label: "4-7 hours", icon: "🪑" },
+                    { label: "8-10 hours", icon: "💺" },
+                    { label: "10+ hours", icon: "🖥️" }
+                ]
+            },
+            {
+                question: "What is your main health goal?",
+                options: [
+                    { label: "Boost energy/vitality", icon: "⚡" },
+                    { label: "Weight management", icon: "⚖️" },
+                    { label: "Strengthen immunity", icon: "🛡️" },
+                    { label: "Anti-aging", icon: "🌟" },
+                    { label: "Disease prevention", icon: "🩺" }
                 ]
             }
         ]
@@ -729,6 +841,52 @@ const surveyTranslations = {
                     { label: "2-3种", icon: "💊💊" },
                     { label: "4种以上", icon: "💊💊💊" }
                 ]
+            },
+            {
+                question: "您每天喝多少水？",
+                options: [
+                    { label: "1杯以下", icon: "🥃" },
+                    { label: "2-4杯", icon: "🥤" },
+                    { label: "5-7杯", icon: "💧" },
+                    { label: "8杯以上", icon: "🌊" }
+                ]
+            },
+            {
+                question: "您摄入多少咖啡因（咖啡/能量饮料）？",
+                options: [
+                    { label: "不喝", icon: "🚫" },
+                    { label: "每天1杯", icon: "☕" },
+                    { label: "每天2-3杯", icon: "☕☕" },
+                    { label: "每天4杯以上", icon: "☕☕☕" }
+                ]
+            },
+            {
+                question: "您的吸烟/饮酒习惯如何？",
+                options: [
+                    { label: "都不", icon: "🌿" },
+                    { label: "偶尔饮酒", icon: "🍷" },
+                    { label: "经常饮酒", icon: "🍺" },
+                    { label: "吸烟且饮酒", icon: "🚬" }
+                ]
+            },
+            {
+                question: "您每天坐着的时间有多长？",
+                options: [
+                    { label: "不到4小时", icon: "🚶" },
+                    { label: "4-7小时", icon: "🪑" },
+                    { label: "8-10小时", icon: "💺" },
+                    { label: "10小时以上", icon: "🖥️" }
+                ]
+            },
+            {
+                question: "您健康管理的主要目标是什么？",
+                options: [
+                    { label: "提升活力/能量", icon: "⚡" },
+                    { label: "体重管理", icon: "⚖️" },
+                    { label: "增强免疫力", icon: "🛡️" },
+                    { label: "抗衰老", icon: "🌟" },
+                    { label: "疾病预防", icon: "🩺" }
+                ]
             }
         ]
     },
@@ -809,6 +967,52 @@ const surveyTranslations = {
                     { label: "1種類", icon: "💊" },
                     { label: "2-3種類", icon: "💊💊" },
                     { label: "4種類以上", icon: "💊💊💊" }
+                ]
+            },
+            {
+                question: "1日の水分摂取量はどれくらいですか？",
+                options: [
+                    { label: "1杯以下", icon: "🥃" },
+                    { label: "2-4杯", icon: "🥤" },
+                    { label: "5-7杯", icon: "💧" },
+                    { label: "8杯以上", icon: "🌊" }
+                ]
+            },
+            {
+                question: "カフェイン(コーヒー/エナジードリンク)はどれくらい飲みますか？",
+                options: [
+                    { label: "飲まない", icon: "🚫" },
+                    { label: "1日1杯", icon: "☕" },
+                    { label: "1日2-3杯", icon: "☕☕" },
+                    { label: "1日4杯以上", icon: "☕☕☕" }
+                ]
+            },
+            {
+                question: "喫煙/飲酒の習慣はどうですか？",
+                options: [
+                    { label: "どちらもしない", icon: "🌿" },
+                    { label: "たまに飲酒", icon: "🍷" },
+                    { label: "よく飲酒", icon: "🍺" },
+                    { label: "喫煙および飲酒", icon: "🚬" }
+                ]
+            },
+            {
+                question: "1日に座っている時間はどれくらいですか？",
+                options: [
+                    { label: "4時間未満", icon: "🚶" },
+                    { label: "4-7時間", icon: "🪑" },
+                    { label: "8-10時間", icon: "💺" },
+                    { label: "10時間以上", icon: "🖥️" }
+                ]
+            },
+            {
+                question: "健康管理の主な目標は何ですか？",
+                options: [
+                    { label: "活力/エネルギー向上", icon: "⚡" },
+                    { label: "体重管理", icon: "⚖️" },
+                    { label: "免疫力強化", icon: "🛡️" },
+                    { label: "アンチエイジング", icon: "🌟" },
+                    { label: "疾病予防", icon: "🩺" }
                 ]
             }
         ]

@@ -1250,6 +1250,130 @@ header h1 {
     white-space: nowrap;
 }
 
+/* 영양제 조합 추천 */
+.combo-section {
+    background: linear-gradient(135deg, #f1f8e9, #e8f5e9);
+    border: 1px solid #c5e1a5;
+    border-radius: 14px;
+    padding: 22px;
+    margin: 20px 0;
+}
+
+.combo-section h3 {
+    margin: 0 0 4px;
+    font-size: 1.15rem;
+    color: #2e7d32;
+}
+
+.combo-subtitle {
+    margin: 0 0 14px;
+    font-size: 0.85rem;
+    color: #558b2f;
+}
+
+.combo-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.combo-card:last-child {
+    margin-bottom: 0;
+}
+
+.combo-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.combo-text {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: #37474f;
+}
+
+/* 건강 칼럼 아카이브 */
+.health-column-section {
+    margin-top: 40px;
+    padding-top: 10px;
+}
+
+.health-column-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.health-column-card {
+    background: var(--white, #fff);
+    border: 1px solid #eee;
+    border-radius: 14px;
+    padding: 22px 20px;
+    box-shadow: var(--shadow, 0 2px 8px rgba(0,0,0,0.06));
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.health-column-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.column-card-icon {
+    font-size: 2rem;
+}
+
+.column-card-title {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #2e3a4d;
+    font-weight: 700;
+}
+
+.column-card-summary {
+    margin: 0;
+    font-size: 0.88rem;
+    color: #6b7280;
+    line-height: 1.5;
+    flex: 1;
+}
+
+.column-card-more {
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: #43a047;
+    font-weight: 700;
+}
+
+.column-modal-body {
+    line-height: 1.7;
+    color: #37474f;
+    font-size: 0.95rem;
+}
+
+.column-modal-body ul {
+    padding-left: 20px;
+    margin: 12px 0;
+}
+
+.column-modal-body li {
+    margin-bottom: 8px;
+}
+
+.column-modal-body p {
+    margin: 10px 0;
+}
+
 .health-tips {
     background: var(--white);
     border-radius: var(--border-radius);

@@ -140,6 +140,13 @@
                         <p data-i18n="feature-science-desc">체계적인 건강 평가</p>
                     </div>
                 </div>
+
+                <!-- 건강 칼럼 아카이브 -->
+                <section id="health-column-section" class="health-column-section">
+                    <h3 class="section-title" data-i18n="column-title">📚 건강 칼럼 & 팁</h3>
+                    <p class="section-subtitle" data-i18n="column-subtitle">전문가가 정리한 건강 정보를 확인해 보세요</p>
+                    <div id="health-column-grid" class="health-column-grid"></div>
+                </section>
             </section>
 
             <!-- 설문 화면 -->
@@ -239,6 +246,12 @@
                     <h3 data-i18n="result-supplements">💊 추천 건강식품 & 영양제</h3>
                     <div id="supplement-list"></div>
                     <div id="ai-recommendation-reason" class="ai-reason" style="display: none;"></div>
+                </div>
+
+                <div id="combo-section" class="combo-section" style="display: none;">
+                    <h3 data-i18n="combo-title">🤝 추천 영양제 조합</h3>
+                    <p class="combo-subtitle" data-i18n="combo-subtitle">함께 섭취하면 흡수·효과가 상승하는 조합입니다</p>
+                    <div id="combo-list"></div>
                 </div>
 
                 <div class="health-tips">
@@ -343,6 +356,19 @@
                 <div class="auth-switch">
                     이미 계정이 있으신가요? <a href="#" onclick="switchToLogin(); return false;">로그인</a>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 건강 칼럼 상세 모달 -->
+    <div id="column-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="column-modal-title">건강 칼럼</h2>
+                <button class="modal-close" onclick="closeColumnModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="column-modal-body" class="column-modal-body"></div>
             </div>
         </div>
     </div>

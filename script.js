@@ -531,7 +531,12 @@ function loadSurveyQuestions() {
                 ["none", "rarely", "sometimes", "often", "daily"],
                 ["irregular", "skip", "regular", "healthy"],
                 ["very_high", "high", "moderate", "low", "very_low"],
-                ["none", "one", "few", "many"]
+                ["none", "one", "few", "many"],
+                ["water_low", "water_mid", "water_ok", "water_good"],      // Q9 물 섭취
+                ["caf_none", "caf_1", "caf_2to3", "caf_4plus"],            // Q10 카페인
+                ["habit_none", "habit_drink_some", "habit_drink_freq", "habit_both"], // Q11 흡연/음주
+                ["sit_low", "sit_mid", "sit_high", "sit_very"],           // Q12 좌식
+                ["goal_energy", "goal_weight", "goal_immunity", "goal_aging", "goal_disease"] // Q13 목표
             ];
             
             return {
@@ -682,6 +687,11 @@ function performAnalysis() {
     const diet = answers[6];
     const stress = answers[7];
     const currentSupplements = answers[8];
+    const water = answers[9];
+    const caffeine = answers[10];
+    const habit = answers[11];
+    const sitting = answers[12];
+    const goal = answers[13];
     
     let healthScore = 100;
     let recommendations = [];
@@ -691,10 +701,10 @@ function performAnalysis() {
 
     // 점수 근거 라벨 (다국어)
     const sbLabels = {
-        ko: { sleepLack: '수면 부족', exerciseLack: '운동 부족', dietPoor: '불규칙한 식사', stressHigh: '높은 스트레스', sleepGood: '충분한 수면', exerciseGood: '규칙적인 운동', heartAbnormal: '심박수 정상 범위 이탈', facePoor: '혈색 저하', tongueWarn: '혀 상태 주의', irisWarn: '홍채 상태 주의' },
-        en: { sleepLack: 'Insufficient sleep', exerciseLack: 'Lack of exercise', dietPoor: 'Irregular meals', stressHigh: 'High stress', sleepGood: 'Adequate sleep', exerciseGood: 'Regular exercise', heartAbnormal: 'Heart rate out of normal range', facePoor: 'Poor complexion', tongueWarn: 'Tongue needs attention', irisWarn: 'Iris needs attention' },
-        zh: { sleepLack: '睡眠不足', exerciseLack: '缺乏运动', dietPoor: '饮食不规律', stressHigh: '压力较高', sleepGood: '充足睡眠', exerciseGood: '规律运动', heartAbnormal: '心率超出正常范围', facePoor: '气色不佳', tongueWarn: '舌象需注意', irisWarn: '虹膜需注意' },
-        ja: { sleepLack: '睡眠不足', exerciseLack: '運動不足', dietPoor: '不規則な食事', stressHigh: '高いストレス', sleepGood: '十分な睡眠', exerciseGood: '規則的な運動', heartAbnormal: '心拍数が正常範囲外', facePoor: '血色の低下', tongueWarn: '舌の状態に注意', irisWarn: '虹彩の状態に注意' }
+        ko: { sleepLack: '수면 부족', exerciseLack: '운동 부족', dietPoor: '불규칙한 식사', stressHigh: '높은 스트레스', sleepGood: '충분한 수면', exerciseGood: '규칙적인 운동', heartAbnormal: '심박수 정상 범위 이탈', facePoor: '혈색 저하', tongueWarn: '혀 상태 주의', irisWarn: '홍채 상태 주의', waterLow: '수분 섭취 부족', waterGood: '충분한 수분 섭취', cafHigh: '과도한 카페인 섭취', habitBad: '흡연·음주 습관', sitHigh: '장시간 좌식 생활' },
+        en: { sleepLack: 'Insufficient sleep', exerciseLack: 'Lack of exercise', dietPoor: 'Irregular meals', stressHigh: 'High stress', sleepGood: 'Adequate sleep', exerciseGood: 'Regular exercise', heartAbnormal: 'Heart rate out of normal range', facePoor: 'Poor complexion', tongueWarn: 'Tongue needs attention', irisWarn: 'Iris needs attention', waterLow: 'Insufficient hydration', waterGood: 'Good hydration', cafHigh: 'Excessive caffeine', habitBad: 'Smoking/drinking habits', sitHigh: 'Prolonged sitting' },
+        zh: { sleepLack: '睡眠不足', exerciseLack: '缺乏运动', dietPoor: '饮食不规律', stressHigh: '压力较高', sleepGood: '充足睡眠', exerciseGood: '规律运动', heartAbnormal: '心率超出正常范围', facePoor: '气色不佳', tongueWarn: '舌象需注意', irisWarn: '虹膜需注意', waterLow: '水分摄入不足', waterGood: '水分充足', cafHigh: '咖啡因摄入过多', habitBad: '吸烟·饮酒习惯', sitHigh: '久坐生活' },
+        ja: { sleepLack: '睡眠不足', exerciseLack: '運動不足', dietPoor: '不規則な食事', stressHigh: '高いストレス', sleepGood: '十分な睡眠', exerciseGood: '規則的な運動', heartAbnormal: '心拍数が正常範囲外', facePoor: '血色の低下', tongueWarn: '舌の状態に注意', irisWarn: '虹彩の状態に注意', waterLow: '水分摂取不足', waterGood: '十分な水分摂取', cafHigh: '過剰なカフェイン摂取', habitBad: '喫煙・飲酒習慣', sitHigh: '長時間の座位生活' }
     };
     const sbl = sbLabels[currentLanguage] || sbLabels.ko;
     const addScore = (delta, label) => { healthScore += delta; scoreBreakdown.push({ delta, label }); };
@@ -706,6 +716,13 @@ function performAnalysis() {
     if (stress === 'very_high' || stress === 'high') addScore(-20, sbl.stressHigh);
     if (sleep === '7to8' || sleep === 'more8') addScore(5, sbl.sleepGood);
     if (exercise === 'often' || exercise === 'daily') addScore(5, sbl.exerciseGood);
+
+    // 신규 생활습관 문항 반영 (Q9~Q12)
+    if (water === 'water_low') addScore(-8, sbl.waterLow);
+    if (water === 'water_good') addScore(3, sbl.waterGood);
+    if (caffeine === 'caf_4plus') addScore(-8, sbl.cafHigh);
+    if (habit === 'habit_both' || habit === 'habit_drink_freq') addScore(-12, sbl.habitBad);
+    if (sitting === 'sit_high' || sitting === 'sit_very') addScore(-8, sbl.sitHigh);
     
     // 카메라 결과 반영
     if (cameraResults.heartRate) {
@@ -907,6 +924,73 @@ function performAnalysis() {
             icon: '🧘',
             text: getAnalysisText('stressTip')
         });
+    }
+
+    // ===== 신규 생활습관 문항 기반 팁/추천 (Q9~Q13) =====
+    const lifeTips = {
+        ko: {
+            water: '하루 물 섭취량이 부족합니다. 하루 6~8잔의 물을 나눠 마시면 신진대사와 피부 건강에 도움이 됩니다.',
+            caffeine: '카페인 섭취가 많습니다. 오후 2시 이후 카페인은 줄이고, 마그네슘 섭취가 수면과 긴장 완화에 도움이 됩니다.',
+            habit: '흡연·음주는 항산화 영양소를 소모시킵니다. 비타민C와 밀크씨슬(간 건강)을 함께 챙기는 것을 권장합니다.',
+            sitting: '장시간 앉아있는 생활은 혈액순환과 관절에 부담을 줍니다. 1시간마다 스트레칭하고 오메가3로 관절·혈행을 관리하세요.',
+            goalAging: '노화 예방 목표에는 항산화 성분(코엔자임Q10, 비타민C)이 도움이 됩니다.',
+            goalWeight: '체중 관리에는 규칙적인 식사와 함께 오메가3, 비타민B군이 대사에 도움이 됩니다.'
+        },
+        en: {
+            water: 'Your daily water intake is low. Drinking 6-8 glasses helps metabolism and skin health.',
+            caffeine: 'Your caffeine intake is high. Cut caffeine after 2 PM; magnesium can help sleep and relaxation.',
+            habit: 'Smoking/drinking depletes antioxidants. Consider vitamin C and milk thistle (liver support).',
+            sitting: 'Prolonged sitting strains circulation and joints. Stretch hourly and use omega-3 for joints/circulation.',
+            goalAging: 'For anti-aging, antioxidants (CoQ10, vitamin C) are helpful.',
+            goalWeight: 'For weight management, regular meals plus omega-3 and B vitamins support metabolism.'
+        },
+        zh: {
+            water: '每日饮水量不足。每天喝6-8杯水有助于新陈代谢和皮肤健康。',
+            caffeine: '咖啡因摄入较多。下午2点后减少咖啡因，镁有助于睡眠和放松。',
+            habit: '吸烟·饮酒会消耗抗氧化营养素。建议补充维生素C和水飞蓟（护肝）。',
+            sitting: '久坐会影响血液循环和关节。每小时伸展一次，用omega-3养护关节和血行。',
+            goalAging: '抗衰老目标可补充抗氧化成分（辅酶Q10、维生素C）。',
+            goalWeight: '体重管理需规律饮食，omega-3和B族维生素有助于代谢。'
+        },
+        ja: {
+            water: '1日の水分摂取が不足しています。6〜8杯の水は代謝と肌の健康に役立ちます。',
+            caffeine: 'カフェイン摂取が多いです。午後2時以降は控え、マグネシウムが睡眠と緊張緩和に役立ちます。',
+            habit: '喫煙・飲酒は抗酸化栄養素を消耗します。ビタミンCとミルクシスル(肝臓ケア)をおすすめします。',
+            sitting: '長時間の座位は血行と関節に負担をかけます。1時間ごとにストレッチし、オメガ3で関節・血行をケアしましょう。',
+            goalAging: 'アンチエイジングには抗酸化成分(コエンザイムQ10、ビタミンC)が役立ちます。',
+            goalWeight: '体重管理には規則的な食事に加え、オメガ3とビタミンB群が代謝を助けます。'
+        }
+    };
+    const lt = lifeTips[currentLanguage] || lifeTips.ko;
+
+    if (water === 'water_low') {
+        tips.push({ icon: '💧', text: lt.water });
+    }
+    if (caffeine === 'caf_4plus') {
+        tips.push({ icon: '☕', text: lt.caffeine });
+        if (!recommendations.find(r => r.supplement.name.includes(getSupplementInfo('magnesium').name))) {
+            recommendations.push({ supplement: getSupplement('magnesium'), priority: 'medium', reason: lt.caffeine });
+        }
+    }
+    if (habit === 'habit_both' || habit === 'habit_drink_freq') {
+        tips.push({ icon: '🚭', text: lt.habit });
+        if (!recommendations.find(r => r.supplement.name.includes(getSupplementInfo('vitaminC').name))) {
+            recommendations.push({ supplement: getSupplement('vitaminC'), priority: 'high', reason: lt.habit });
+        }
+    }
+    if (sitting === 'sit_high' || sitting === 'sit_very') {
+        tips.push({ icon: '🪑', text: lt.sitting });
+        if (!recommendations.find(r => r.supplement.name.includes(getSupplementInfo('omega3').name))) {
+            recommendations.push({ supplement: getSupplement('omega3'), priority: 'medium', reason: lt.sitting });
+        }
+    }
+    if (goal === 'goal_aging') {
+        tips.push({ icon: '🌟', text: lt.goalAging });
+        if (!recommendations.find(r => r.supplement.name.includes(getSupplementInfo('coq10').name))) {
+            recommendations.push({ supplement: getSupplement('coq10'), priority: 'medium', reason: lt.goalAging });
+        }
+    } else if (goal === 'goal_weight') {
+        tips.push({ icon: '⚖️', text: lt.goalWeight });
     }
     
     // 여성 특화 추천
@@ -1466,6 +1550,9 @@ function displayResults(analysis) {
         `;
     });
     document.getElementById('supplement-list').innerHTML = supplementHTML;
+
+    // 영양제 조합 추천 렌더링
+    renderComboRecommendations(analysis.recommendations);
     
     // AI 영양제 추천 근거
     if (analysis.aiReason) {
@@ -1496,6 +1583,96 @@ function displayResults(analysis) {
     });
     document.getElementById('health-tips-list').innerHTML = tipsHTML;
 }
+
+// ===== 영양제 조합 추천 =====
+// 알려진 시너지 조합 (영양제 name 기준 매칭은 키워드로 처리)
+const SUPPLEMENT_COMBOS = [
+    {
+        keys: ['calcium', 'vitaminD'],
+        icon: '🦴',
+        text: {
+            ko: '칼슘 + 비타민D: 비타민D가 칼슘 흡수율을 높여 뼈 건강에 시너지를 냅니다.',
+            en: 'Calcium + Vitamin D: Vitamin D boosts calcium absorption for stronger bones.',
+            zh: '钙 + 维生素D：维生素D提高钙吸收率，协同增强骨骼健康。',
+            ja: 'カルシウム + ビタミンD: ビタミンDがカルシウム吸収を高め、骨の健康に相乗効果。'
+        }
+    },
+    {
+        keys: ['iron', 'vitaminC'],
+        icon: '🩸',
+        text: {
+            ko: '철분 + 비타민C: 비타민C가 철분의 흡수를 크게 향상시킵니다. 공복에 함께 드세요.',
+            en: 'Iron + Vitamin C: Vitamin C greatly enhances iron absorption. Take together on empty stomach.',
+            zh: '铁 + 维生素C：维生素C大幅提升铁的吸收，建议空腹一起服用。',
+            ja: '鉄 + ビタミンC: ビタミンCが鉄の吸収を大きく高めます。空腹時に一緒に。'
+        }
+    },
+    {
+        keys: ['omega3', 'coq10'],
+        icon: '❤️',
+        text: {
+            ko: '오메가3 + 코엔자임Q10: 지용성 성분으로 함께 섭취 시 흡수와 심혈관 건강에 좋습니다.',
+            en: 'Omega-3 + CoQ10: Both fat-soluble; taken together they support absorption and heart health.',
+            zh: 'omega-3 + 辅酶Q10：均为脂溶性，一起服用有助吸收和心血管健康。',
+            ja: 'オメガ3 + コエンザイムQ10: 脂溶性同士で、一緒に摂ると吸収と心血管の健康に良い。'
+        }
+    },
+    {
+        keys: ['magnesium', 'vitaminB'],
+        icon: '😌',
+        text: {
+            ko: '마그네슘 + 비타민B군: 신경 안정과 에너지 대사를 함께 도와 스트레스·피로 관리에 효과적입니다.',
+            en: 'Magnesium + B Vitamins: Together they aid nerve calming and energy metabolism for stress/fatigue.',
+            zh: '镁 + B族维生素：共同促进神经安定和能量代谢，有助压力和疲劳管理。',
+            ja: 'マグネシウム + ビタミンB群: 神経安定とエネルギー代謝を助け、ストレス・疲労管理に効果的。'
+        }
+    },
+    {
+        keys: ['probiotics', 'vitaminC'],
+        icon: '🛡️',
+        text: {
+            ko: '프로바이오틱스 + 비타민C: 장 건강과 면역을 동시에 강화하는 조합입니다.',
+            en: 'Probiotics + Vitamin C: A combo that strengthens gut health and immunity together.',
+            zh: '益生菌 + 维生素C：同时增强肠道健康和免疫力的组合。',
+            ja: 'プロバイオティクス + ビタミンC: 腸の健康と免疫を同時に強化する組み合わせ。'
+        }
+    }
+];
+
+// 추천 목록에서 특정 supplement 키가 포함됐는지 확인
+function recHasKey(recommendations, key) {
+    const info = (typeof getSupplementInfo === 'function') ? getSupplementInfo(key) : null;
+    const targetName = info && info.name ? info.name : null;
+    return recommendations.some(r => {
+        const n = r.supplement && r.supplement.name ? r.supplement.name : '';
+        return targetName ? n.includes(targetName) : false;
+    });
+}
+
+function renderComboRecommendations(recommendations) {
+    const section = document.getElementById('combo-section');
+    const list = document.getElementById('combo-list');
+    if (!section || !list || !recommendations) return;
+
+    const lang = (typeof currentLanguage !== 'undefined') ? currentLanguage : 'ko';
+    const matched = SUPPLEMENT_COMBOS.filter(combo =>
+        combo.keys.every(k => recHasKey(recommendations, k))
+    );
+
+    if (matched.length === 0) {
+        section.style.display = 'none';
+        return;
+    }
+
+    list.innerHTML = matched.map(combo => `
+        <div class="combo-card">
+            <span class="combo-icon">${combo.icon}</span>
+            <p class="combo-text">${combo.text[lang] || combo.text.ko}</p>
+        </div>
+    `).join('');
+    section.style.display = 'block';
+}
+window.renderComboRecommendations = renderComboRecommendations;
 
 // 결과를 이미지로 저장
 async function saveResultAsImage() {
@@ -1731,6 +1908,92 @@ function renderMissions() {
         buildGroup('weekly', t['mission-weekly'] || '주간 미션');
 }
 window.renderMissions = renderMissions;
+
+// ===== 건강 칼럼 아카이브 =====
+const HEALTH_COLUMNS = [
+    {
+        id: 'sleep',
+        icon: '😴',
+        title: { ko: '숙면을 위한 5가지 습관', en: '5 Habits for Better Sleep', zh: '改善睡眠的5个习惯', ja: '快眠のための5つの習慣' },
+        summary: { ko: '수면의 질을 높이는 과학적 방법을 알아봅니다.', en: 'Science-backed ways to improve sleep quality.', zh: '了解提升睡眠质量的科学方法。', ja: '睡眠の質を高める科学的方法を紹介します。' },
+        body: {
+            ko: '<p>수면은 면역력, 기억력, 대사에 직접적인 영향을 줍니다.</p><ul><li>매일 같은 시간에 자고 일어나기</li><li>취침 1시간 전 스마트폰·블루라이트 차단</li><li>카페인은 오후 2시 이전까지만</li><li>침실은 어둡고 서늘하게(18~20℃)</li><li>마그네슘 섭취가 근육 이완과 수면에 도움</li></ul><p>지속적인 불면이 있다면 전문의 상담을 권장합니다.</p>',
+            en: '<p>Sleep directly affects immunity, memory and metabolism.</p><ul><li>Go to bed and wake up at the same time daily</li><li>Avoid phones/blue light 1 hour before bed</li><li>No caffeine after 2 PM</li><li>Keep the bedroom dark and cool (18-20°C)</li><li>Magnesium helps muscle relaxation and sleep</li></ul><p>Consult a doctor for chronic insomnia.</p>',
+            zh: '<p>睡眠直接影响免疫力、记忆力和代谢。</p><ul><li>每天同一时间入睡和起床</li><li>睡前1小时避免手机/蓝光</li><li>下午2点后不摄入咖啡因</li><li>卧室保持黑暗凉爽(18-20℃)</li><li>镁有助于肌肉放松和睡眠</li></ul><p>持续失眠请咨询专业医生。</p>',
+            ja: '<p>睡眠は免疫・記憶・代謝に直接影響します。</p><ul><li>毎日同じ時間に就寝・起床</li><li>就寝1時間前はスマホ・ブルーライトを避ける</li><li>カフェインは午後2時まで</li><li>寝室は暗く涼しく(18〜20℃)</li><li>マグネシウムが筋弛緩と睡眠を助けます</li></ul><p>慢性的な不眠は専門医にご相談ください。</p>'
+        }
+    },
+    {
+        id: 'immunity',
+        icon: '🛡️',
+        title: { ko: '면역력을 높이는 식습관', en: 'Diet to Boost Immunity', zh: '增强免疫力的饮食', ja: '免疫力を高める食習慣' },
+        summary: { ko: '일상에서 실천하는 면역 강화 식단.', en: 'Everyday foods that strengthen immunity.', zh: '日常可实践的免疫强化饮食。', ja: '日常で実践できる免疫強化の食事。' },
+        body: {
+            ko: '<p>면역력의 70%는 장 건강에서 시작됩니다.</p><ul><li>발효식품(김치, 요거트)으로 유익균 공급</li><li>비타민C가 풍부한 제철 과일·채소</li><li>비타민D는 햇볕과 보충제로 함께</li><li>충분한 단백질과 아연 섭취</li><li>가공식품·과당 줄이기</li></ul><p>규칙적인 수면·운동과 병행할 때 효과가 큽니다.</p>',
+            en: '<p>70% of immunity begins in gut health.</p><ul><li>Fermented foods (kimchi, yogurt) for good bacteria</li><li>Seasonal fruits/veggies rich in vitamin C</li><li>Vitamin D from sunlight and supplements</li><li>Adequate protein and zinc</li><li>Reduce processed foods and sugar</li></ul><p>Best combined with regular sleep and exercise.</p>',
+            zh: '<p>70%的免疫力始于肠道健康。</p><ul><li>发酵食品(泡菜、酸奶)补充益生菌</li><li>富含维生素C的当季果蔬</li><li>维生素D通过阳光和补充剂获取</li><li>摄入充足蛋白质和锌</li><li>减少加工食品和糖分</li></ul><p>配合规律睡眠和运动效果更佳。</p>',
+            ja: '<p>免疫力の70%は腸の健康から始まります。</p><ul><li>発酵食品(キムチ、ヨーグルト)で善玉菌を補給</li><li>ビタミンC豊富な旬の果物・野菜</li><li>ビタミンDは日光とサプリで</li><li>十分なタンパク質と亜鉛</li><li>加工食品・糖分を控える</li></ul><p>規則的な睡眠・運動と併用すると効果的です。</p>'
+        }
+    },
+    {
+        id: 'eyes',
+        icon: '👁️',
+        title: { ko: '눈 건강 지키는 디지털 습관', en: 'Digital Habits for Eye Health', zh: '保护眼睛的数字习惯', ja: '目を守るデジタル習慣' },
+        summary: { ko: '스마트폰 시대의 눈 피로 줄이기.', en: 'Reduce eye strain in the digital age.', zh: '在数字时代减轻眼疲劳。', ja: 'デジタル時代の目の疲れを減らす。' },
+        body: {
+            ko: '<p>장시간 화면 사용은 안구건조증과 시력저하를 유발합니다.</p><ul><li>20-20-20 규칙: 20분마다 20초간 20피트(6m) 밖 보기</li><li>의식적으로 눈 깜빡이기</li><li>루테인·지아잔틴으로 황반 보호</li><li>오메가3가 안구 건조 완화에 도움</li><li>화면 밝기·거리 조절</li></ul>',
+            en: '<p>Prolonged screen time causes dry eyes and vision decline.</p><ul><li>20-20-20 rule: every 20 min look 20 ft away for 20 sec</li><li>Blink consciously</li><li>Lutein/zeaxanthin protect the macula</li><li>Omega-3 helps relieve dry eyes</li><li>Adjust screen brightness and distance</li></ul>',
+            zh: '<p>长时间用屏会导致干眼和视力下降。</p><ul><li>20-20-20法则：每20分钟看20英尺(6米)外20秒</li><li>有意识地眨眼</li><li>叶黄素/玉米黄质保护黄斑</li><li>omega-3有助缓解干眼</li><li>调整屏幕亮度和距离</li></ul>',
+            ja: '<p>長時間の画面使用はドライアイと視力低下を招きます。</p><ul><li>20-20-20ルール:20分ごとに20秒、6m先を見る</li><li>意識的にまばたきする</li><li>ルテイン・ゼアキサンチンで黄斑を保護</li><li>オメガ3がドライアイ緩和に役立つ</li><li>画面の明るさ・距離を調整</li></ul>'
+        }
+    },
+    {
+        id: 'stress',
+        icon: '🧘',
+        title: { ko: '스트레스와 영양소의 관계', en: 'Stress and Nutrition', zh: '压力与营养的关系', ja: 'ストレスと栄養の関係' },
+        summary: { ko: '스트레스가 소모시키는 영양소 관리법.', en: 'Manage nutrients depleted by stress.', zh: '管理被压力消耗的营养素。', ja: 'ストレスが消耗させる栄養素の管理法。' },
+        body: {
+            ko: '<p>만성 스트레스는 마그네슘·비타민B·비타민C를 빠르게 소모합니다.</p><ul><li>마그네슘: 신경 안정과 근육 이완</li><li>비타민B군: 에너지 대사와 신경 기능</li><li>비타민C: 스트레스 호르몬(코르티솔) 조절</li><li>아슈와간다 등 아답토겐 허브</li><li>규칙적인 명상·호흡 훈련</li></ul>',
+            en: '<p>Chronic stress rapidly depletes magnesium, B vitamins and vitamin C.</p><ul><li>Magnesium: nerve calming and muscle relaxation</li><li>B vitamins: energy metabolism and nerve function</li><li>Vitamin C: regulates cortisol</li><li>Adaptogens like ashwagandha</li><li>Regular meditation/breathing</li></ul>',
+            zh: '<p>慢性压力会迅速消耗镁、B族维生素和维生素C。</p><ul><li>镁：安神和肌肉放松</li><li>B族维生素：能量代谢和神经功能</li><li>维生素C：调节皮质醇</li><li>南非醉茄等适应原草本</li><li>规律冥想/呼吸训练</li></ul>',
+            ja: '<p>慢性ストレスはマグネシウム・ビタミンB・Cを急速に消耗します。</p><ul><li>マグネシウム:神経安定と筋弛緩</li><li>ビタミンB群:エネルギー代謝と神経機能</li><li>ビタミンC:コルチゾール調整</li><li>アシュワガンダなどアダプトゲン</li><li>規則的な瞑想・呼吸法</li></ul>'
+        }
+    }
+];
+
+function renderHealthColumns() {
+    const grid = document.getElementById('health-column-grid');
+    if (!grid) return;
+    const lang = (typeof currentLanguage !== 'undefined') ? currentLanguage : 'ko';
+    const t = (typeof translations !== 'undefined' && translations[lang]) ? translations[lang] : {};
+    const readMore = t['column-readmore'] || '자세히 보기 →';
+    grid.innerHTML = HEALTH_COLUMNS.map(col => `
+        <article class="health-column-card" onclick="openColumnModal('${col.id}')">
+            <div class="column-card-icon">${col.icon}</div>
+            <h4 class="column-card-title">${col.title[lang] || col.title.ko}</h4>
+            <p class="column-card-summary">${col.summary[lang] || col.summary.ko}</p>
+            <span class="column-card-more">${readMore}</span>
+        </article>
+    `).join('');
+}
+window.renderHealthColumns = renderHealthColumns;
+
+function openColumnModal(id) {
+    const col = HEALTH_COLUMNS.find(c => c.id === id);
+    if (!col) return;
+    const lang = (typeof currentLanguage !== 'undefined') ? currentLanguage : 'ko';
+    document.getElementById('column-modal-title').textContent = `${col.icon} ${col.title[lang] || col.title.ko}`;
+    document.getElementById('column-modal-body').innerHTML = col.body[lang] || col.body.ko;
+    document.getElementById('column-modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+window.openColumnModal = openColumnModal;
+
+function closeColumnModal() {
+    document.getElementById('column-modal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+window.closeColumnModal = closeColumnModal;
 
 // 건강 점수 추이 그래프
 let healthTrendChartInstance = null;
@@ -3188,11 +3451,17 @@ document.addEventListener('keydown', (e) => {
 // 언어 변경
 function changeLanguage(lang) {
     saveLanguage(lang);
+    currentLanguage = lang;
     
     // 언어 버튼 활성화
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === lang);
     });
+
+    // 건강 칼럼 재렌더링 (언어 반영)
+    if (typeof renderHealthColumns === 'function') {
+        renderHealthColumns();
+    }
     
     // 번역 즉시 적용
     if (typeof applyTranslations === 'function') {
@@ -3406,6 +3675,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    // 건강 칼럼 아카이브 렌더링
+    if (typeof renderHealthColumns === 'function') {
+        renderHealthColumns();
+    }
+
     // 관리자 계정 자동 생성 (최초 실행 시)
     initializeAdmin();
     
