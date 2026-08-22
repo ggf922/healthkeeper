@@ -1682,19 +1682,97 @@ async function saveResultAsImage() {
     }
     const target = document.getElementById('result-screen');
     const actions = document.querySelector('.result-actions');
+    const restartBtn = target ? target.querySelector('.btn-primary') : null;
+    if (!target) return;
+
+    // 저장 버튼 클릭 시 로딩 표시
+    const saveBtn = actions ? actions.querySelector('button') : null;
+    const originalSaveHTML = saveBtn ? saveBtn.innerHTML : null;
+    if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = (currentLanguage === 'en' ? '⏳ Saving...' : '⏳ 저장 중...');
+    }
+
     try {
+        // 1) 캡처에서 제외할 버튼 영역 숨김
         if (actions) actions.style.visibility = 'hidden';
-        const canvas = await html2canvas(target, { backgroundColor: '#f5f7fa', scale: 2, useCORS: true });
-        if (actions) actions.style.visibility = 'visible';
+        if (restartBtn) restartBtn.style.visibility = 'hidden';
+
+        // 2) 화면 맨 위로 스크롤 + 렌더링 안정화 대기(폰트/차트/이미지)
+        window.scrollTo(0, 0);
+        if (document.fonts && document.fonts.ready) {
+            try { await document.fonts.ready; } catch (_) {}
+        }
+        await new Promise(r => setTimeout(r, 350));
+
+        // 3) 요소의 실제 전체 크기 계산(잘림 방지)
+        const rect = target.getBoundingClientRect();
+        const fullWidth = Math.ceil(Math.max(target.scrollWidth, rect.width));
+        const fullHeight = Math.ceil(Math.max(target.scrollHeight, rect.height));
+
+        const canvas = await html2canvas(target, {
+            backgroundColor: '#f5f7fa',
+            scale: Math.min(window.devicePixelRatio || 1, 2),
+            useCORS: true,
+            allowTaint: true,
+            logging: false,
+            scrollX: 0,
+            scrollY: 0,
+            x: 0,
+            y: 0,
+            width: fullWidth,
+            height: fullHeight,
+            windowWidth: fullWidth,
+            windowHeight: fullHeight,
+            // 복제된 DOM에서 애니메이션/블러/숨김 요소를 정리해 빈 이미지 방지
+            onclone: (clonedDoc) => {
+                const clonedTarget = clonedDoc.getElementById('result-screen');
+                if (clonedTarget) {
+                    clonedTarget.classList.add('active');
+                    clonedTarget.style.display = 'block';
+                    clonedTarget.style.animation = 'none';
+                    clonedTarget.style.opacity = '1';
+                    clonedTarget.style.transform = 'none';
+                }
+                // backdrop-filter(blur)는 html2canvas가 렌더 못 하므로 제거
+                clonedDoc.querySelectorAll('*').forEach(el => {
+                    const st = el.style;
+                    st.backdropFilter = 'none';
+                    st.webkitBackdropFilter = 'none';
+                    if (getComputedStyle(el).animationName !== 'none') {
+                        st.animation = 'none';
+                    }
+                });
+                // 캡처에서 제외할 버튼들 숨김
+                const clonedActions = clonedDoc.querySelector('#result-screen .result-actions');
+                if (clonedActions) clonedActions.style.display = 'none';
+                const clonedRestart = clonedDoc.querySelector('#result-screen .btn-primary');
+                if (clonedRestart) clonedRestart.style.display = 'none';
+            }
+        });
+
+        // 4) 빈 캔버스 검사 (혹시라도 실패 시 사용자에게 안내)
+        if (!canvas || canvas.width === 0 || canvas.height === 0) {
+            throw new Error('empty canvas');
+        }
+
         const link = document.createElement('a');
         const dateStr = new Date().toISOString().slice(0, 10);
         link.download = `healthkeeper-result-${dateStr}.png`;
         link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
     } catch (e) {
-        if (actions) actions.style.visibility = 'visible';
         console.error('이미지 저장 실패:', e);
-        alert(currentLanguage === 'en' ? 'Failed to save image.' : '이미지 저장에 실패했습니다.');
+        alert(currentLanguage === 'en' ? 'Failed to save image. Please try again.' : '이미지 저장에 실패했습니다. 다시 시도해 주세요.');
+    } finally {
+        if (actions) actions.style.visibility = 'visible';
+        if (restartBtn) restartBtn.style.visibility = 'visible';
+        if (saveBtn) {
+            saveBtn.disabled = false;
+            if (originalSaveHTML !== null) saveBtn.innerHTML = originalSaveHTML;
+        }
     }
 }
 
