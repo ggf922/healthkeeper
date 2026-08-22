@@ -1,20 +1,17 @@
 {
-  "name": "webapp",
-  "type": "module",
+  "name": "healthkeeper",
+  "version": "1.0.0",
+  "private": true,
+  "description": "건강 100세 - 맞춤형 영양제 추천 서비스",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "wrangler pages dev",
-    "deploy": "npm run build && wrangler pages deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+    "dev": "npx serve -l 3000 .",
+    "start": "npx serve -l 3000 ."
   },
-  "dependencies": {
-    "hono": "^4.13.3"
-  },
-  "devDependencies": {
-    "@hono/vite-build": "^1.11.1",
-    "@hono/vite-dev-server": "^0.26.1",
-    "vite": "^8.1.4",
-    "wrangler": "^4.110.0"
-  }
+  "keywords": [
+    "health",
+    "supplement",
+    "supabase",
+    "vercel"
+  ],
+  "license": "MIT"
 }

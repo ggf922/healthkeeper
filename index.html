@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>건강 100세 - 맞춤형 영양제 추천</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <header>
+            <div class="header-content">
+                <div>
+                    <h1 data-i18n="app-title">🏥 건강 100세</h1>
+                    <p class="subtitle" data-i18n="app-subtitle">나만의 맞춤형 건강식품 추천 서비스</p>
+                </div>
+                <div class="header-actions">
+                    <div class="language-selector">
+                        <button class="lang-btn active" onclick="changeLanguage('ko')" data-lang="ko">한국어</button>
+                        <button class="lang-btn" onclick="changeLanguage('en')" data-lang="en">English</button>
+                        <button class="lang-btn" onclick="changeLanguage('zh')" data-lang="zh">中文</button>
+                        <button class="lang-btn" onclick="changeLanguage('ja')" data-lang="ja">日本語</button>
+                    </div>
+                    <button class="help-btn" onclick="openGuide()" title="사용설명서">
+                        <span class="help-icon">❓</span>
+                        <span class="help-text">사용법</span>
+                    </button>
+                    <div id="auth-buttons" class="auth-buttons">
+                        <button class="btn-auth" onclick="showLoginModal()">로그인</button>
+                        <button class="btn-auth btn-auth-primary" onclick="showSignupModal()">회원가입</button>
+                    </div>
+                    <div id="user-menu" class="user-menu" style="display: none;">
+                        <button class="user-info-btn" onclick="toggleUserDropdown()">
+                            <span class="user-icon">👤</span>
+                            <span class="user-name" id="user-display-name">사용자</span>
+                        </button>
+                        <div class="user-dropdown" id="user-dropdown">
+                        <div class="dropdown-item" data-action="mypage">
+                                <span>📊</span> 내 기록
+                        </div>
+                        <div class="dropdown-item" data-action="referral">
+                                <span>🎁</span> 레퍼럴
+                        </div>
+                        <div class="dropdown-item" data-action="mypage">
+                                <span>🔍</span> AI 검사 횟수: <span id="user-ai-credits">0</span>회
+                        </div>
+                        <div class="dropdown-item admin-only" data-action="admin" style="display: none;">
+                                <span>🔧</span> 관리자
+                        </div>
+                        <div class="dropdown-item" data-action="logout">
+                                <span>🚪</span> 로그아웃
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 메인 콘텐츠 -->
+        <main id="app">
+            <!-- 시작 화면 -->
+            <section id="start-screen" class="screen active">
+                <div class="welcome-card">
+                    <div class="icon">💊</div>
+                    <h2 data-i18n="welcome-title">건강 체크를 시작하세요</h2>
+                    <p data-i18n="welcome-desc">간단한 질문에 답하시면 맞춤형 건강식품과 영양제를 추천해드립니다</p>
+                    <p class="welcome-features" data-i18n="welcome-features">📋 8가지 설문 + 📸 카메라 건강 체크 + 🤖 AI 분석</p>
+                    <div class="signup-benefit">
+                        <div class="benefit-header">
+                            <div class="benefit-badge">🎁</div>
+                            <h3 class="benefit-title" data-i18n="benefit-title">회원가입 혜택</h3>
+                        </div>
+                        <ul class="benefit-list">
+                            <li data-i18n="benefit-1">✅ AI 검사 3회 무료 제공</li>
+                            <li data-i18n="benefit-2">✅ 건강 기록 자동 저장</li>
+                            <li data-i18n="benefit-3">✅ 레퍼럴 보너스 포인트</li>
+                            <li data-i18n="benefit-4">✅ 맞춤형 건강 분석 리포트</li>
+                        </ul>
+                        <button class="btn btn-signup-now" onclick="showSignupModal()" data-i18n="btn-signup-now">
+                            지금 가입하기 →
+                        </button>
+                    </div>
+                    <button class="btn btn-primary" onclick="startSurvey()" data-i18n="btn-start">건강 체크 시작하기</button>
+                </div>
+                
+                <!-- 카메라 건강 체크 기능 소개 -->
+                <div class="camera-features-section">
+                    <div class="doctor-intro">
+                        <div class="doctor-image">
+                            <div class="doctor-avatar">👨‍⚕️</div>
+                        </div>
+                        <div class="doctor-text">
+                            <h4>AI가 분석하는 건강 체크</h4>
+                            <p>스마트폰 카메라로 간편하게 건강 상태를 확인하고, AI 기술로 전문적인 분석을 받아보세요</p>
+                        </div>
+                    </div>
+                    
+                    <h3 class="section-title" data-i18n="camera-features-title">📸 카메라 건강 체크 기능</h3>
+                    <p class="section-subtitle" data-i18n="camera-features-subtitle">스마트폰 카메라로 간편하게 건강 상태를 확인하세요</p>
+                    
+                    <div class="camera-features-grid">
+                        <div class="camera-feature-card">
+                            <div class="camera-feature-icon">❤️</div>
+                            <h4 data-i18n="camera-feature-heartrate-title">심박수 측정</h4>
+                            <p data-i18n="camera-feature-heartrate-desc">손가락을 카메라 후면에 15초간 대면 심박수를 측정합니다.</p>
+                        </div>
+                        <div class="camera-feature-card">
+                            <div class="camera-feature-icon">👤</div>
+                            <h4 data-i18n="camera-feature-face-title">얼굴 분석 (자동 촬영)</h4>
+                            <p data-i18n="camera-feature-face-desc">얼굴 색상과 혈색을 분석하여 전반적인 건강 상태와 영양 상태를 평가합니다.</p>
+                        </div>
+                        <div class="camera-feature-card">
+                            <div class="camera-feature-icon">👅</div>
+                            <h4 data-i18n="camera-feature-tongue-title">혀 분석 (자동 촬영)</h4>
+                            <p data-i18n="camera-feature-tongue-desc">혀의 색상과 상태를 분석하여 체질과 건강 상태를 진단합니다.</p>
+                        </div>
+                        <div class="camera-feature-card">
+                            <div class="camera-feature-icon">👁️</div>
+                            <h4 data-i18n="camera-feature-iris-title">홍채 분석 (자동 촬영)</h4>
+                            <p data-i18n="camera-feature-iris-desc">홍채 색상과 패턴을 분석하여 눈 건강과 전반적인 건강 상태를 평가합니다.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="features">
+                    <div class="feature-item">
+                        <span class="emoji">📱</span>
+                        <h3 data-i18n="feature-mobile-title">모바일 최적화</h3>
+                        <p data-i18n="feature-mobile-desc">언제 어디서나 편리하게</p>
+                    </div>
+                    <div class="feature-item">
+                        <span class="emoji">🎯</span>
+                        <h3 data-i18n="feature-custom-title">맞춤형 추천</h3>
+                        <p data-i18n="feature-custom-desc">나에게 필요한 영양제</p>
+                    </div>
+                    <div class="feature-item">
+                        <span class="emoji">🔬</span>
+                        <h3 data-i18n="feature-science-title">과학적 분석</h3>
+                        <p data-i18n="feature-science-desc">체계적인 건강 평가</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 설문 화면 -->
+            <section id="survey-screen" class="screen">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress"></div>
+                </div>
+                <div class="survey-card">
+                    <div class="question-number" id="question-number">질문 1/8</div>
+                    <h2 class="question-title" id="question-title"></h2>
+                    <div class="options" id="options"></div>
+                    <div class="navigation-buttons">
+                        <button class="btn btn-secondary" id="prev-btn" onclick="previousQuestion()" style="display: none;">이전</button>
+                        <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" disabled>다음</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 카메라 체크 선택 화면 -->
+            <section id="camera-choice-screen" class="screen">
+                <div class="survey-card">
+                    <h2 data-i18n="camera-choice-title">📸 카메라 건강 체크</h2>
+                    <p class="camera-intro" data-i18n="camera-choice-intro">카메라를 이용한 추가 건강 체크를 진행하시겠습니까?<br>더욱 정확한 건강 분석이 가능합니다!</p>
+                    
+                    <div class="device-notice">
+                        <p><span data-i18n="camera-device-support">💡 <strong>모든 기기 지원:</strong> 스마트폰, 태블릿, 노트북 모두 사용 가능합니다</span></p>
+                        <p data-i18n="camera-device-phone">📱 스마트폰: 후면 카메라 + 플래시 사용</p>
+                        <p data-i18n="camera-device-laptop">💻 노트북/태블릿: 전면 카메라 + 화면 밝기 사용</p>
+                    </div>
+                    
+                    <div class="camera-options">
+                        <div class="camera-option-card" onclick="startCameraCheck()">
+                            <div class="camera-icon">📷</div>
+                            <h3 data-i18n="camera-start-btn">카메라 체크 하기</h3>
+                            <p data-i18n="camera-start-desc">심박수, 얼굴 분석, 혀 진단, 홍채 진단</p>
+                        </div>
+                        <div class="camera-option-card" onclick="skipCameraCheck()">
+                            <div class="camera-icon">⏭️</div>
+                            <h3 data-i18n="camera-skip-btn">건너뛰기</h3>
+                            <p data-i18n="camera-skip-desc">설문 결과만으로 분석</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 카메라 체크 화면 -->
+            <section id="camera-screen" class="screen">
+                <div class="camera-card">
+                    <div class="camera-step-indicator" id="camera-step">1/3 단계</div>
+                    <h2 id="camera-title">심박수 측정</h2>
+                    <p id="camera-instruction" class="camera-instruction"></p>
+                    
+                    <div class="camera-container">
+                        <video id="video" autoplay playsinline></video>
+                        <canvas id="canvas" style="display: none;"></canvas>
+                        <div id="camera-overlay" class="camera-overlay"></div>
+                    </div>
+                    
+                    <div class="camera-status" id="camera-status"></div>
+                    
+                    <div class="camera-controls">
+                        <button class="btn btn-secondary" onclick="skipCurrentCameraCheck()" data-i18n="camera-skip-step">이 단계 건너뛰기</button>
+                        <button class="btn btn-primary" id="camera-action-btn" onclick="startMeasurement()" style="display: none;" data-i18n="camera-start-measurement">측정 시작</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 로딩 화면 -->
+            <section id="loading-screen" class="screen">
+                <div class="loading-card">
+                    <div class="loader"></div>
+                    <h2 id="loading-title" data-i18n="loading-title">건강 분석 중...</h2>
+                    <p id="loading-message" data-i18n="loading-subtitle">맞춤형 추천을 준비하고 있습니다</p>
+                </div>
+            </section>
+
+            <!-- 결과 화면 -->
+            <section id="result-screen" class="screen">
+                <div class="result-header">
+                    <h2 data-i18n="result-title">🎯 건강 분석 결과</h2>
+                    <div class="health-score" id="health-score"></div>
+                </div>
+                
+                <div class="camera-results" id="camera-results" style="display: none;">
+                    <h3 id="camera-results-title">📸 카메라 건강 체크 결과</h3>
+                    <div id="camera-results-content"></div>
+                </div>
+                
+                <div class="ai-analysis" id="ai-analysis" style="display: none;">
+                    <h3 id="ai-analysis-title">🤖 AI 건강 분석</h3>
+                    <div id="ai-analysis-content" class="ai-content"></div>
+                </div>
+
+                <div class="result-summary" id="result-summary"></div>
+                
+                <div class="recommendations">
+                    <h3 data-i18n="result-supplements">💊 추천 건강식품 & 영양제</h3>
+                    <div id="supplement-list"></div>
+                    <div id="ai-recommendation-reason" class="ai-reason" style="display: none;"></div>
+                </div>
+
+                <div class="health-tips">
+                    <h3 data-i18n="result-tips">💡 건강 관리 팁</h3>
+                    <div id="health-tips-list"></div>
+                </div>
+
+                <!-- 건강 100세 쇼핑몰 -->
+                <div class="shopping-section" id="shopping-section" style="display: none;">
+                    <div class="shopping-banner">
+                        <div class="shopping-icon">🛒</div>
+                        <h3 data-i18n="shopping-title">건강 100세 쇼핑몰</h3>
+                        <p data-i18n="shopping-desc">추천된 영양제를 편리하게 구매하세요!</p>
+                        <a id="shopping-link" href="#" target="_blank" class="btn btn-shopping">
+                            <span data-i18n="shopping-btn">쇼핑몰 바로가기</span> →
+                        </a>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="restartSurvey()" data-i18n="btn-restart">다시 체크하기</button>
+            </section>
+        </main>
+
+        <!-- 푸터 -->
+        <footer>
+            <p data-i18n="footer-notice">본 서비스는 일반적인 건강 정보 제공을 목적으로 하며, 의학적 진단이나 처방을 대체할 수 없습니다.</p>
+            <p class="copyright" data-i18n="footer-copyright">© 2025 건강 100세. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- 로그인 모달 -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content auth-modal">
+            <div class="modal-header">
+                <h2>🔐 로그인</h2>
+                <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-email">이메일</label>
+                        <input type="email" id="login-email" required placeholder="example@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">비밀번호</label>
+                        <input type="password" id="login-password" required placeholder="비밀번호를 입력하세요">
+                    </div>
+                    <div id="login-error" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary btn-block">로그인</button>
+                </form>
+                <div class="auth-switch">
+                    계정이 없으신가요? <a href="#" onclick="switchToSignup(); return false;">회원가입</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 회원가입 모달 -->
+    <div id="signup-modal" class="modal">
+        <div class="modal-content auth-modal">
+            <div class="modal-header">
+                <h2>✨ 회원가입</h2>
+                <button class="modal-close" onclick="closeSignupModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="signup-form" onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label for="signup-name">이름</label>
+                        <input type="text" id="signup-name" required placeholder="이름을 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">이메일</label>
+                        <input type="email" id="signup-email" required placeholder="example@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">비밀번호</label>
+                        <input type="password" id="signup-password" required minlength="6" placeholder="6자 이상 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password-confirm">비밀번호 확인</label>
+                        <input type="password" id="signup-password-confirm" required placeholder="비밀번호를 다시 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-referral">
+                            추천인 코드 (선택사항)
+                            <span class="label-hint">친구의 레퍼럴 코드를 입력하세요</span>
+                        </label>
+                        <input type="text" id="signup-referral" placeholder="예: HEALTH1234">
+                    </div>
+                    <div id="signup-error" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary btn-block">회원가입</button>
+                </form>
+                <div class="auth-switch">
+                    이미 계정이 있으신가요? <a href="#" onclick="switchToLogin(); return false;">로그인</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 마이페이지 모달 -->
+    <div id="mypage-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📊 내 건강 기록</h2>
+                <button class="modal-close" onclick="closeMyPage()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="user-info-card">
+                    <h3>👤 회원 정보</h3>
+                    <p><strong>이름:</strong> <span id="mypage-name"></span></p>
+                    <p><strong>이메일:</strong> <span id="mypage-email"></span></p>
+                    <p><strong>가입일:</strong> <span id="mypage-joindate"></span></p>
+                    <p><strong>AI 검사 가능 횟수:</strong> <span id="mypage-ai-count" style="color: #2196F3; font-size: 1.2rem; font-weight: bold;"><span id="mypage-ai-credits">0</span>회</span></p>
+                    <button class="btn btn-secondary" onclick="openSendCreditsModal()" style="margin-top: 15px;">
+                        💸 AI 크레딧 전송하기
+                    </button>
+                </div>
+                
+                <div class="referral-card">
+                    <h3>🎁 내 레퍼럴 코드</h3>
+                    <div class="referral-code-box">
+                        <span class="referral-code" id="my-referral-code">HEALTH1234</span>
+                        <button class="btn btn-secondary" onclick="copyReferralCode()">복사</button>
+                    </div>
+                    <p class="referral-desc">친구에게 공유하고 함께 건강을 관리하세요!</p>
+                    <p class="referral-stats">
+                        <strong>추천한 친구:</strong> <span id="referral-count">0</span>명
+                    </p>
+                </div>
+
+                <div class="health-records">
+                    <h3>📈 건강 체크 기록</h3>
+                    <div id="health-records-list">
+                        <p class="no-records">아직 건강 체크 기록이 없습니다.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeMyPage()">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI 크레딧 전송 모달 -->
+    <div id="send-credits-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💸 AI 크레딧 전송</h2>
+                <button class="modal-close" onclick="closeSendCreditsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="info-box" style="background: #e3f2fd; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <p style="margin: 0; color: #1976d2;">
+                        💡 다른 회원에게 AI 검사 크레딧을 전송할 수 있습니다.
+                    </p>
+                </div>
+                
+                <form id="send-credits-form" onsubmit="handleSendCredits(event)">
+                    <div class="form-group">
+                        <label>보유 크레딧</label>
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #2196F3; margin-bottom: 15px;">
+                            <span id="sender-credits-display">0</span>개
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="recipient-email">받는 사람 이메일</label>
+                        <input type="email" id="recipient-email" required placeholder="example@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="credit-amount">전송할 크레딧 수</label>
+                        <input type="number" id="credit-amount" required min="1" placeholder="1">
+                        <small style="color: #666; display: block; margin-top: 5px;">
+                            최소 1개부터 전송 가능합니다
+                        </small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transfer-message">메시지 (선택사항)</label>
+                        <textarea id="transfer-message" rows="3" placeholder="전송과 함께 보낼 메시지를 입력하세요"></textarea>
+                    </div>
+                    
+                    <div id="send-credits-error" class="error-message"></div>
+                    <div id="send-credits-success" class="success-message" style="display: none; background: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 10px;"></div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">전송하기</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 관리자 대시보드 모달 -->
+    <div id="admin-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>🔧 관리자 대시보드</h2>
+                <button class="modal-close" onclick="closeAdminDashboard()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="admin-stats">
+                    <h3>📊 전체 통계</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="admin-total-users">0</div>
+                            <div class="stat-label">전체 회원</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="admin-total-records">0</div>
+                            <div class="stat-label">건강 체크 기록</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="admin-total-referrals">0</div>
+                            <div class="stat-label">총 레퍼럴</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="admin-total-credits">0</div>
+                            <div class="stat-label">총 발행 횟수</div>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="admin-ai-settings">
+                        <h3>🤖 AI 설정</h3>
+                        <div class="ai-settings-card">
+                            <form id="admin-ai-form" onsubmit="saveAdminAISettings(event)">
+                                <div class="form-group">
+                                    <label for="admin-openai-key">OpenAI API Key</label>
+                                    <input type="password" id="admin-openai-key" placeholder="sk-..." autocomplete="off">
+                                    <small class="form-hint">모든 사용자의 AI 분석에 사용됩니다</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="admin-aihub-key">AI Hub API Key</label>
+                                    <input type="password" id="admin-aihub-key" placeholder="AI Hub API 키를 입력하세요" autocomplete="off">
+                                    <small class="form-hint">홍채, 얼굴, 혀 진단에 사용됩니다 (선택사항)</small>
+                                </div>
+                                <div class="api-status" id="admin-api-status">
+                                    <span id="admin-api-status-icon">⚪</span>
+                                    <span id="admin-api-status-text">API 키가 설정되지 않았습니다</span>
+                                </div>
+                                <div class="api-status" id="admin-aihub-status" style="margin-top: 10px;">
+                                    <span id="admin-aihub-status-icon">⚪</span>
+                                    <span id="admin-aihub-status-text">AI Hub API 키가 설정되지 않았습니다</span>
+                                </div>
+                                <div class="button-group">
+                                    <button type="button" class="btn btn-secondary" onclick="testAdminAPIKey()">OpenAI 연결 테스트</button>
+                                    <button type="button" class="btn btn-secondary" onclick="testAIHubAPIKey()">AI Hub 연결 테스트</button>
+                                    <button type="submit" class="btn btn-primary">저장</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="admin-shopping-settings">
+                        <h3>🛒 쇼핑몰 설정</h3>
+                        <div class="ai-settings-card">
+                            <form id="admin-shopping-form" onsubmit="saveShoppingSettings(event)">
+                                <div class="form-group">
+                                    <label for="admin-shopping-url">쇼핑몰 URL</label>
+                                    <input type="url" id="admin-shopping-url" placeholder="https://your-shop.com" autocomplete="off">
+                                    <small class="form-hint">결과 화면에 표시될 쇼핑몰 링크입니다</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="admin-shopping-enabled">
+                                        <input type="checkbox" id="admin-shopping-enabled" style="width: auto; margin-right: 10px;">
+                                        쇼핑몰 링크 표시
+                                    </label>
+                                    <small class="form-hint">체크 해제 시 결과 화면에 쇼핑몰이 표시되지 않습니다</small>
+                                </div>
+                                <div class="shopping-status" id="admin-shopping-status">
+                                    <span id="admin-shopping-status-icon">⚪</span>
+                                    <span id="admin-shopping-status-text">쇼핑몰 URL이 설정되지 않았습니다</span>
+                                </div>
+                                <button type="submit" class="btn btn-primary">저장</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="admin-users">
+                        <h3>👥 회원 관리</h3>
+                        <div class="search-box">
+                            <input type="text" id="admin-search" placeholder="이름 또는 이메일 검색..." onkeyup="filterUsers()">
+                        </div>
+                        <div class="users-table">
+                            <table id="admin-users-table">
+                                <thead>
+                                    <tr>
+                                        <th>회원정보</th>
+                                        <th>레퍼럴코드</th>
+                                        <th>추천인/추천수</th>
+                                        <th>가입일</th>
+                                        <th>포인트</th>
+                                        <th>AI횟수</th>
+                                        <th>관리</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-users-tbody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 포인트/검사 횟수 조절 모달 -->
+    <div id="point-modal" class="modal">
+        <div class="modal-content auth-modal">
+            <div class="modal-header">
+                <h2>💰 포인트 & AI 검사 횟수 조절</h2>
+                <button class="modal-close" onclick="closePointModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                        <div class="user-info-box">
+                            <p><strong>회원:</strong> <span id="point-user-name"></span></p>
+                            <p><strong>현재 포인트:</strong> <span id="point-current">0</span></p>
+                            <p><strong>AI 검사 가능 횟수:</strong> <span id="credit-current">0</span>회</p>
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab-btn active" onclick="switchTab('point')">포인트</button>
+                            <button class="tab-btn" onclick="switchTab('credit')">AI 검사 횟수</button>
+                        </div>
+
+                <form id="point-form" onsubmit="handlePointAdjustment(event)">
+                    <div class="form-group">
+                        <label>조절 방식</label>
+                        <select id="point-action" class="form-control">
+                            <option value="add">추가</option>
+                            <option value="subtract">차감</option>
+                            <option value="set">설정</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label id="point-value-label">포인트 값</label>
+                        <input type="number" id="point-value" required min="0" placeholder="값 입력">
+                    </div>
+                    <div class="form-group">
+                        <label>메모 (선택사항)</label>
+                        <input type="text" id="point-memo" placeholder="조절 사유">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">적용</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 레퍼럴 정보 모달 -->
+    <div id="referral-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎁 레퍼럴 프로그램</h2>
+                <button class="modal-close" onclick="closeReferralInfo()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="referral-info-section">
+                    <h3>🌟 레퍼럴 혜택</h3>
+                    <ul class="benefit-list">
+                        <li>✅ 친구 추천 시 양쪽 모두 포인트 적립</li>
+                        <li>✅ 누적 포인트로 프리미엄 기능 이용</li>
+                        <li>✅ 건강 커뮤니티 우선 접근</li>
+                        <li>✅ 특별 이벤트 참여 기회</li>
+                    </ul>
+                </div>
+
+                <div class="referral-code-card">
+                    <h3>🔗 내 레퍼럴 코드</h3>
+                    <div class="referral-code-box large">
+                        <span class="referral-code" id="referral-code-display">HEALTH1234</span>
+                        <button class="btn btn-primary" onclick="copyReferralCode()">
+                            <span>📋</span> 코드 복사
+                        </button>
+                    </div>
+                    <p class="referral-code-hint" data-i18n="referral-code-hint">또는</p>
+                    <div class="referral-link-box">
+                        <input type="text" id="referral-link-display" class="referral-link-input" readonly>
+                        <button class="btn btn-secondary" onclick="copyReferralLink()">
+                            <span>🔗</span> <span data-i18n="referral-link-copy">링크 복사</span>
+                        </button>
+                    </div>
+                    <p class="referral-link-hint" data-i18n="referral-link-hint">👆 이 링크를 공유하면 자동으로 회원가입 페이지가 열립니다</p>
+                </div>
+
+                <div class="referral-stats-section">
+                    <h3>📊 내 추천 현황</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="referral-total">0</div>
+                            <div class="stat-label">총 추천 수</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="referral-points">0</div>
+                            <div class="stat-label">적립 포인트</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="referral-members-section">
+                    <h3>👥 내가 추천한 회원</h3>
+                    <div id="referral-members-list" class="referral-members-list">
+                        <p class="no-records">아직 추천한 회원이 없습니다.</p>
+                    </div>
+                </div>
+
+                <div class="referral-guide">
+                    <h3>📝 사용 방법</h3>
+                    <ol>
+                        <li>위의 레퍼럴 코드를 복사하세요</li>
+                        <li>친구에게 공유하세요</li>
+                        <li>친구가 회원가입 시 코드를 입력합니다</li>
+                        <li>양쪽 모두 포인트가 적립됩니다!</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeReferralInfo()">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 사용설명서 모달 -->
+    <div id="guide-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📖 사용설명서</h2>
+                <button class="modal-close" onclick="closeGuide()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- 목차 -->
+                <div class="guide-toc">
+                    <h3>목차</h3>
+                    <ul>
+                        <li><a href="#guide-start">시작하기</a></li>
+                        <li><a href="#guide-survey">설문조사</a></li>
+                        <li><a href="#guide-camera">카메라 건강 체크</a></li>
+                        <li><a href="#guide-results">결과 확인</a></li>
+                        <li><a href="#guide-tips">측정 팁</a></li>
+                        <li><a href="#guide-devices">지원 기기</a></li>
+                    </ul>
+                </div>
+
+                <!-- 시작하기 -->
+                <div id="guide-start" class="guide-section">
+                    <h3>🚀 시작하기</h3>
+                    <p>건강 100세는 간단한 설문과 카메라 측정을 통해 맞춤형 건강식품을 추천해드립니다.</p>
+                    <ol>
+                        <li><strong>"건강 체크 시작하기"</strong> 버튼을 클릭합니다</li>
+                        <li>8가지 질문에 솔직하게 답변합니다</li>
+                        <li>카메라 건강 체크를 선택합니다 (선택사항)</li>
+                        <li>개인 맞춤형 결과를 확인합니다</li>
+                    </ol>
+                </div>
+
+                <!-- 설문조사 -->
+                <div id="guide-survey" class="guide-section">
+                    <h3>📋 설문조사 가이드</h3>
+                    <p>8가지 질문을 통해 현재 건강 상태를 파악합니다:</p>
+                    <ul>
+                        <li><strong>나이와 성별:</strong> 연령대별 맞춤 추천</li>
+                        <li><strong>건강 고민:</strong> 주요 건강 문제 파악</li>
+                        <li><strong>수면 시간:</strong> 수면의 질 평가</li>
+                        <li><strong>운동 빈도:</strong> 활동량 측정</li>
+                        <li><strong>식사 습관:</strong> 영양 상태 평가</li>
+                        <li><strong>스트레스 수준:</strong> 정신 건강 체크</li>
+                        <li><strong>현재 영양제:</strong> 기존 보충제 확인</li>
+                    </ul>
+                    <div class="guide-tip">
+                        💡 <strong>팁:</strong> 솔직하게 답변할수록 더 정확한 추천을 받을 수 있습니다.
+                    </div>
+                </div>
+
+                <!-- 카메라 건강 체크 -->
+                <div id="guide-camera" class="guide-section">
+                    <h3>📸 카메라 건강 체크 가이드</h3>
+                    
+                    <h4>1️⃣ 심박수 측정 (15초)</h4>
+                    <div class="device-guide">
+                        <div class="device-item">
+                            <strong>📱 스마트폰:</strong>
+                            <ul>
+                                <li>후면 카메라에 검지손가락을 가볍게 댑니다</li>
+                                <li>플래시가 켜지면 손가락 끝이 빨갛게 보입니다</li>
+                                <li>15초간 움직이지 않고 유지합니다</li>
+                            </ul>
+                        </div>
+                        <div class="device-item">
+                            <strong>💻 노트북/태블릿:</strong>
+                            <ul>
+                                <li>화면이 밝게 켜집니다 (광원 역할)</li>
+                                <li>웹캠 렌즈에 검지손가락을 최대한 가까이 댑니다</li>
+                                <li>밝은 곳에서 측정하면 더 정확합니다</li>
+                                <li>15초간 안정적으로 유지합니다</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h4>2️⃣ 얼굴 분석 (자동 촬영)</h4>
+                    <ul>
+                        <li>화면을 보며 얼굴을 원형 가이드 안에 맞춥니다</li>
+                        <li>밝은 조명 아래에서 촬영합니다</li>
+                        <li>3초 후 자동으로 촬영됩니다</li>
+                        <li>피부 톤과 혈색을 분석합니다</li>
+                    </ul>
+
+                    <h4>3️⃣ 혀 진단 (자동 촬영)</h4>
+                    <ul>
+                        <li>혀를 최대한 내밀어 사각형 가이드 안에 맞춥니다</li>
+                        <li>자연광 아래에서 촬영하면 좋습니다</li>
+                        <li>3초 후 자동으로 촬영됩니다</li>
+                        <li>한의학 기반 혀 색상을 분석합니다</li>
+                    </ul>
+
+                    <h4>4️⃣ 홍채 진단 (자동 촬영)</h4>
+                    <div class="device-guide">
+                        <div class="device-item">
+                            <strong>📱 스마트폰:</strong>
+                            <ul>
+                                <li>카메라를 눈에 가까이 가져갑니다</li>
+                                <li>양쪽 눈을 번갈아 가며 촬영합니다</li>
+                                <li>눈을 크게 뜨고 정면을 바라봅니다</li>
+                                <li>밝은 조명 아래에서 촬영하면 더 정확합니다</li>
+                                <li>3초 후 자동으로 촬영됩니다</li>
+                            </ul>
+                        </div>
+                        <div class="device-item">
+                            <strong>💻 노트북/태블릿:</strong>
+                            <ul>
+                                <li>웹캠 앞에 앉아 눈을 정면으로 바라봅니다</li>
+                                <li>화면의 원형 가이드에 눈이 맞도록 위치를 조정합니다</li>
+                                <li>눈을 크게 뜨고 깜빡이지 않습니다</li>
+                                <li>밝은 조명 아래에서 촬영합니다</li>
+                                <li>3초 후 자동으로 촬영됩니다</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <ul>
+                        <li>홍채 색상과 패턴을 분석하여 눈 건강 상태를 평가합니다</li>
+                        <li>전반적인 건강 상태와 영양 상태를 진단합니다</li>
+                        <li>MediaPipe AI 기술을 활용한 정확한 분석입니다</li>
+                    </ul>
+
+                    <div class="guide-warning">
+                        ⚠️ <strong>주의:</strong> 카메라 권한을 허용해야 측정이 가능합니다. 각 단계는 건너뛸 수 있습니다.
+                    </div>
+                </div>
+
+                <!-- 결과 확인 -->
+                <div id="guide-results" class="guide-section">
+                    <h3>🎯 결과 확인 가이드</h3>
+                    
+                    <h4>건강 점수 (0-100점)</h4>
+                    <ul>
+                        <li><strong>80점 이상:</strong> 매우 좋음 😊</li>
+                        <li><strong>60-79점:</strong> 좋음 🙂</li>
+                        <li><strong>40-59점:</strong> 보통 😐</li>
+                        <li><strong>40점 미만:</strong> 주의 필요 😟</li>
+                    </ul>
+
+                    <h4>카메라 측정 결과</h4>
+                    <ul>
+                        <li><strong>심박수:</strong> 정상 범위 60-100 BPM</li>
+                        <li><strong>얼굴 분석:</strong> 피부 톤과 혈색 상태</li>
+                        <li><strong>혀 진단:</strong> 체질 및 건강 상태</li>
+                        <li><strong>홍채 진단:</strong> 눈 건강 및 전반적인 건강 상태</li>
+                    </ul>
+
+                    <h4>추천 영양제</h4>
+                    <ul>
+                        <li><strong class="priority-high">필수:</strong> 반드시 필요한 영양제</li>
+                        <li><strong class="priority-medium">권장:</strong> 도움이 되는 영양제</li>
+                        <li><strong class="priority-low">선택:</strong> 추가로 고려할 영양제</li>
+                    </ul>
+
+                    <h4>건강 관리 팁</h4>
+                    <p>실천 가능한 생활 습관 개선 방법을 제공합니다.</p>
+                </div>
+
+                <!-- 측정 팁 -->
+                <div id="guide-tips" class="guide-section">
+                    <h3>💡 정확한 측정을 위한 팁</h3>
+                    
+                    <h4>심박수 측정 팁</h4>
+                    <div class="tips-grid">
+                        <div class="tip-card success">
+                            <div class="tip-icon">✅</div>
+                            <div>
+                                <strong>좋은 환경</strong>
+                                <ul>
+                                    <li>밝은 조명 아래</li>
+                                    <li>안정적인 자세</li>
+                                    <li>손가락 밀착</li>
+                                    <li>15초간 유지</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="tip-card error">
+                            <div class="tip-icon">❌</div>
+                            <div>
+                                <strong>피해야 할 것</strong>
+                                <ul>
+                                    <li>어두운 환경</li>
+                                    <li>손 떨림</li>
+                                    <li>너무 세게 누르기</li>
+                                    <li>측정 중 움직임</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4>촬영 팁</h4>
+                    <ul>
+                        <li>자연광이나 밝은 실내 조명 사용</li>
+                        <li>그림자가 생기지 않도록 주의</li>
+                        <li>렌즈를 깨끗하게 닦기</li>
+                        <li>가이드 라인에 맞춰 촬영</li>
+                    </ul>
+                </div>
+
+                <!-- 지원 기기 -->
+                <div id="guide-devices" class="guide-section">
+                    <h3>📱 지원 기기 및 브라우저</h3>
+                    
+                    <h4>지원 기기</h4>
+                    <div class="devices-grid">
+                        <div class="device-card">
+                            <div class="device-icon">📱</div>
+                            <strong>스마트폰</strong>
+                            <p>Android, iOS</p>
+                            <span class="badge badge-excellent">최고 정확도</span>
+                        </div>
+                        <div class="device-card">
+                            <div class="device-icon">📱</div>
+                            <strong>태블릿</strong>
+                            <p>iPad, Android Tablet</p>
+                            <span class="badge badge-good">높은 정확도</span>
+                        </div>
+                        <div class="device-card">
+                            <div class="device-icon">💻</div>
+                            <strong>노트북</strong>
+                            <p>Windows, Mac, Chromebook</p>
+                            <span class="badge badge-good">높은 정확도</span>
+                        </div>
+                    </div>
+
+                    <h4>권장 브라우저</h4>
+                    <ul>
+                        <li>Chrome (권장)</li>
+                        <li>Safari</li>
+                        <li>Edge</li>
+                        <li>Firefox</li>
+                    </ul>
+
+                    <div class="guide-info">
+                        ℹ️ <strong>참고:</strong> 카메라 기능은 HTTPS 환경에서만 작동합니다. (로컬 테스트는 예외)
+                    </div>
+                </div>
+
+                <!-- 자주 묻는 질문 -->
+                <div id="guide-faq" class="guide-section">
+                    <h3>❓ 자주 묻는 질문 (FAQ)</h3>
+                    
+                    <div class="faq-item">
+                        <strong>Q. 카메라 측정이 정확한가요?</strong>
+                        <p>A. 참고용 측정이며 의료기기가 아닙니다. 실제 심박수의 ±5-10% 오차가 있을 수 있습니다.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <strong>Q. 노트북에서도 심박수 측정이 가능한가요?</strong>
+                        <p>A. 네, 가능합니다. 화면이 밝게 켜지며 광원 역할을 합니다. 밝은 환경에서 측정하면 더 정확합니다.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <strong>Q. 카메라 권한이 걱정됩니다.</strong>
+                        <p>A. 카메라는 측정 시에만 사용되며, 이미지는 저장되지 않습니다. 브라우저를 닫으면 즉시 종료됩니다.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <strong>Q. 추천 영양제를 꼭 복용해야 하나요?</strong>
+                        <p>A. 참고용 추천입니다. 특정 질환이나 복용 중인 약이 있다면 전문의와 상담하세요.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <strong>Q. 결과를 저장할 수 있나요?</strong>
+                        <p>A. 현재는 화면 캡처나 스크린샷으로 저장하실 수 있습니다. 향후 저장 기능이 추가될 예정입니다.</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeGuide()">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- MediaPipe Face Mesh for Iris Detection -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+    
+    <script src="i18n.js"></script>
+    <script src="supabase-db.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
