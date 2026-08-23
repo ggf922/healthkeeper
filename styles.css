@@ -1767,6 +1767,11 @@ body.rtl .benefit-list li {
     border-radius: var(--border-radius);
     padding: 30px;
     box-shadow: var(--shadow-lg);
+    /* 심박수 측정 중 화면 플래시(#screen-flash, z-index:900)가
+       카드의 텍스트/버튼을 덮어 글자가 안 보이던 문제 수정:
+       카드를 플래시 위로 올려 안내·상태 문구가 항상 선명하게 보이도록 함 */
+    position: relative;
+    z-index: 901;
 }
 
 .camera-step-indicator {
@@ -1884,15 +1889,21 @@ body.rtl .benefit-list li {
 
 .bpm-display {
     font-size: 3rem;
-    color: #ff5252;
+    color: #ff1744;
     font-weight: bold;
     animation: pulse 1s infinite;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .bpm-label {
-    color: white;
+    color: #ffffff;
     font-size: 1.2rem;
+    font-weight: 700;
     margin-top: 10px;
+    padding: 4px 14px;
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 999px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .face-guide {
@@ -1988,7 +1999,8 @@ body.rtl .benefit-list li {
 
 .camera-status.info {
     background: #e3f2fd;
-    color: #1565c0;
+    color: #0d47a1;
+    font-weight: 600;
     border-left: 4px solid var(--secondary-color);
 }
 

@@ -2820,14 +2820,16 @@ function enableScreenFlash() {
     document.body.style.setProperty('--screen-flash', 'white');
     const screenFlash = document.createElement('div');
     screenFlash.id = 'screen-flash';
+    // 화면 상단에만 흰색 밝기를 주어 카메라(전면) 조명 역할을 하되,
+    // 하단의 측정 안내/상태/버튼 영역은 가리지 않도록 한다.
     screenFlash.style.cssText = `
         position: fixed;
         top: 0;
         left: 0;
         width: 100vw;
-        height: 100vh;
+        height: 40vh;
         background: white;
-        z-index: 999;
+        z-index: 900;
         pointer-events: none;
     `;
     document.body.appendChild(screenFlash);
