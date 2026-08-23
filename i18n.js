@@ -34,6 +34,9 @@ const translations = {
         'feature-science-desc': '체계적인 건강 평가',
         
         // 카메라 기능 소개
+        'help-text': '사용법',
+        'doctor-title': 'AI가 분석하는 건강 체크',
+        'doctor-desc': '스마트폰 카메라로 간편하게 건강 상태를 확인하고, AI 기술로 전문적인 분석을 받아보세요',
         'camera-features-title': '📸 카메라 건강 체크 기능',
         'camera-features-subtitle': '스마트폰 카메라로 간편하게 건강 상태를 확인하세요',
         'camera-feature-heartrate-title': '심박수 측정',
@@ -160,6 +163,9 @@ const translations = {
         'feature-science-desc': 'Systematic health assessment',
         
         // Camera Features
+        'help-text': 'Guide',
+        'doctor-title': 'AI-Powered Health Check',
+        'doctor-desc': 'Easily check your health with your smartphone camera and get professional analysis powered by AI',
         'camera-features-title': '📸 Camera Health Check Features',
         'camera-features-subtitle': 'Check your health status easily with your smartphone camera',
         'camera-feature-heartrate-title': 'Heart Rate Measurement',
@@ -280,6 +286,9 @@ const translations = {
         'feature-science-desc': '系统化健康评估',
         
         // 摄像头功能
+        'help-text': '使用说明',
+        'doctor-title': 'AI分析的健康检查',
+        'doctor-desc': '用智能手机摄像头轻松检查健康状况，通过AI技术获得专业分析',
         'camera-features-title': '📸 摄像头健康检查功能',
         'camera-features-subtitle': '使用智能手机摄像头轻松检查健康状况',
         'camera-feature-heartrate-title': '心率测量',
@@ -400,6 +409,9 @@ const translations = {
         'feature-science-desc': '体系的な健康評価',
         
         // カメラ機能
+        'help-text': '使い方',
+        'doctor-title': 'AIが分析する健康チェック',
+        'doctor-desc': 'スマートフォンのカメラで簡単に健康状態を確認し、AI技術で専門的な分析を受けられます',
         'camera-features-title': '📸 カメラ健康チェック機能',
         'camera-features-subtitle': 'スマートフォンのカメラで簡単に健康状態を確認',
         'camera-feature-heartrate-title': '心拍数測定',
@@ -514,6 +526,9 @@ const translations = {
         'feature-custom-desc': 'Los suplementos que necesitas',
         'feature-science-title': 'Análisis científico',
         'feature-science-desc': 'Evaluación sistemática de salud',
+        'help-text': 'Guía',
+        'doctor-title': 'Chequeo de salud con IA',
+        'doctor-desc': 'Comprueba fácilmente tu salud con la cámara del móvil y recibe un análisis profesional con IA',
         'camera-features-title': '📸 Funciones de chequeo con cámara',
         'camera-features-subtitle': 'Comprueba fácilmente tu salud con la cámara del móvil',
         'camera-feature-heartrate-title': 'Medición de ritmo cardíaco',
@@ -618,6 +633,9 @@ const translations = {
         'feature-custom-desc': 'Les compléments qu\'il vous faut',
         'feature-science-title': 'Analyse scientifique',
         'feature-science-desc': 'Évaluation systématique de la santé',
+        'help-text': 'Guide',
+        'doctor-title': 'Bilan de santé par IA',
+        'doctor-desc': 'Vérifiez facilement votre santé avec la caméra du téléphone et obtenez une analyse professionnelle par IA',
         'camera-features-title': '📸 Fonctions de bilan par caméra',
         'camera-features-subtitle': 'Vérifiez facilement votre santé avec la caméra du téléphone',
         'camera-feature-heartrate-title': 'Mesure du rythme cardiaque',
@@ -721,6 +739,9 @@ const translations = {
         'feature-custom-desc': 'Добавки, которые нужны вам',
         'feature-science-title': 'Научный анализ',
         'feature-science-desc': 'Системная оценка здоровья',
+        'help-text': 'Инструкция',
+        'doctor-title': 'Проверка здоровья с ИИ',
+        'doctor-desc': 'Легко проверьте здоровье камерой смартфона и получите профессиональный анализ на основе ИИ',
         'camera-features-title': '📸 Функции проверки камерой',
         'camera-features-subtitle': 'Легко проверьте здоровье камерой смартфона',
         'camera-feature-heartrate-title': 'Измерение пульса',
@@ -824,6 +845,9 @@ const translations = {
         'feature-custom-desc': 'المكملات التي تحتاجها',
         'feature-science-title': 'تحليل علمي',
         'feature-science-desc': 'تقييم صحي منهجي',
+        'help-text': 'دليل الاستخدام',
+        'doctor-title': 'فحص صحي بالذكاء الاصطناعي',
+        'doctor-desc': 'تحقق من صحتك بسهولة باستخدام كاميرا الهاتف واحصل على تحليل احترافي بالذكاء الاصطناعي',
         'camera-features-title': '📸 وظائف الفحص بالكاميرا',
         'camera-features-subtitle': 'تحقق من صحتك بسهولة باستخدام كاميرا الهاتف',
         'camera-feature-heartrate-title': 'قياس معدل ضربات القلب',
