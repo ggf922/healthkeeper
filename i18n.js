@@ -97,6 +97,7 @@ const translations = {
         // 인증
         'login': '로그인',
         'signup': '회원가입',
+        'mypage': '마이페이지',
         'email': '이메일',
         'password': '비밀번호',
         'name': '이름',
@@ -216,6 +217,7 @@ const translations = {
         
         'login': 'Login',
         'signup': 'Sign Up',
+        'mypage': 'My Page',
         'email': 'Email',
         'password': 'Password',
         'name': 'Name',
@@ -333,6 +335,7 @@ const translations = {
         
         'login': '登录',
         'signup': '注册',
+        'mypage': '我的页面',
         'email': '邮箱',
         'password': '密码',
         'name': '姓名',
@@ -450,6 +453,7 @@ const translations = {
         
         'login': 'ログイン',
         'signup': '会員登録',
+        'mypage': 'マイページ',
         'email': 'メール',
         'password': 'パスワード',
         'name': '名前',
@@ -555,6 +559,7 @@ const translations = {
         'btn-restart': 'Rehacer chequeo',
         'login': 'Iniciar sesión',
         'signup': 'Registrarse',
+        'mypage': 'Mi página',
         'email': 'Correo',
         'password': 'Contraseña',
         'name': 'Nombre',

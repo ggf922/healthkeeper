@@ -252,31 +252,36 @@ function checkReferralLink() {
 }
 
 // 회원가입 모달 열기
+// 회원가입: 모두옥션(modoo.auction) 회원가입 페이지로 연결
 function showSignupModal() {
-    // 회원가입은 외부 사이트로 연결
-    window.location.href = 'https://modoo.auction/#/auth/register';
+    window.open('https://modoo.auction/#/auth/register', '_blank', 'noopener');
 }
 
-// 회원가입 모달 닫기
+// 회원가입 모달 닫기 (구 모달 잔존 대비 안전 처리)
 function closeSignupModal() {
-    document.getElementById('signup-modal').classList.remove('active');
+    const m = document.getElementById('signup-modal');
+    if (m) m.classList.remove('active');
     document.body.style.overflow = '';
-    document.getElementById('signup-form').reset();
-    document.getElementById('signup-error').classList.remove('show');
+    const f = document.getElementById('signup-form');
+    if (f) f.reset();
+    const e = document.getElementById('signup-error');
+    if (e) e.classList.remove('show');
 }
 
-// 로그인 모달 열기
+// 로그인: 모두옥션(modoo.auction) 로그인 페이지로 연결
 function showLoginModal() {
-    document.getElementById('login-modal').classList.add('active');
-    document.body.style.overflow = 'hidden';
+    window.open('https://modoo.auction/#/auth/login', '_blank', 'noopener');
 }
 
-// 로그인 모달 닫기
+// 로그인 모달 닫기 (구 모달 잔존 대비 안전 처리)
 function closeLoginModal() {
-    document.getElementById('login-modal').classList.remove('active');
+    const m = document.getElementById('login-modal');
+    if (m) m.classList.remove('active');
     document.body.style.overflow = '';
-    document.getElementById('login-form').reset();
-    document.getElementById('login-error').classList.remove('show');
+    const f = document.getElementById('login-form');
+    if (f) f.reset();
+    const e = document.getElementById('login-error');
+    if (e) e.classList.remove('show');
 }
 
 // 모달 전환
