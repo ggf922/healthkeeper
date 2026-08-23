@@ -1997,6 +1997,7 @@ const HEALTH_COLUMNS = [
     {
         id: 'sleep',
         icon: '😴',
+        slug: 'sleep-health',
         title: { ko: '숙면을 위한 5가지 습관', en: '5 Habits for Better Sleep', zh: '改善睡眠的5个习惯', ja: '快眠のための5つの習慣' },
         summary: { ko: '수면의 질을 높이는 과학적 방법을 알아봅니다.', en: 'Science-backed ways to improve sleep quality.', zh: '了解提升睡眠质量的科学方法。', ja: '睡眠の質を高める科学的方法を紹介します。' },
         body: {
@@ -2009,6 +2010,7 @@ const HEALTH_COLUMNS = [
     {
         id: 'immunity',
         icon: '🛡️',
+        slug: 'immunity-boost',
         title: { ko: '면역력을 높이는 식습관', en: 'Diet to Boost Immunity', zh: '增强免疫力的饮食', ja: '免疫力を高める食習慣' },
         summary: { ko: '일상에서 실천하는 면역 강화 식단.', en: 'Everyday foods that strengthen immunity.', zh: '日常可实践的免疫强化饮食。', ja: '日常で実践できる免疫強化の食事。' },
         body: {
@@ -2021,6 +2023,7 @@ const HEALTH_COLUMNS = [
     {
         id: 'eyes',
         icon: '👁️',
+        slug: 'eye-health',
         title: { ko: '눈 건강 지키는 디지털 습관', en: 'Digital Habits for Eye Health', zh: '保护眼睛的数字习惯', ja: '目を守るデジタル習慣' },
         summary: { ko: '스마트폰 시대의 눈 피로 줄이기.', en: 'Reduce eye strain in the digital age.', zh: '在数字时代减轻眼疲劳。', ja: 'デジタル時代の目の疲れを減らす。' },
         body: {
@@ -2033,6 +2036,7 @@ const HEALTH_COLUMNS = [
     {
         id: 'stress',
         icon: '🧘',
+        slug: 'stress-management',
         title: { ko: '스트레스와 영양소의 관계', en: 'Stress and Nutrition', zh: '压力与营养的关系', ja: 'ストレスと栄養の関係' },
         summary: { ko: '스트레스가 소모시키는 영양소 관리법.', en: 'Manage nutrients depleted by stress.', zh: '管理被压力消耗的营养素。', ja: 'ストレスが消耗させる栄養素の管理法。' },
         body: {
@@ -2051,12 +2055,12 @@ function renderHealthColumns() {
     const t = (typeof translations !== 'undefined' && translations[lang]) ? translations[lang] : {};
     const readMore = t['column-readmore'] || '자세히 보기 →';
     grid.innerHTML = HEALTH_COLUMNS.map(col => `
-        <article class="health-column-card" onclick="openColumnModal('${col.id}')">
+        <a class="health-column-card" href="/blog/${col.slug}">
             <div class="column-card-icon">${col.icon}</div>
             <h4 class="column-card-title">${col.title[lang] || col.title.ko}</h4>
             <p class="column-card-summary">${col.summary[lang] || col.summary.ko}</p>
             <span class="column-card-more">${readMore}</span>
-        </article>
+        </a>
     `).join('');
 }
 window.renderHealthColumns = renderHealthColumns;

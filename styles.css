@@ -1569,6 +1569,8 @@ body.rtl .benefit-list li {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    text-decoration: none;
+    color: inherit;
 }
 
 .health-column-card:hover {
@@ -1600,6 +1602,47 @@ body.rtl .benefit-list li {
     font-size: 0.85rem;
     color: #43a047;
     font-weight: 700;
+}
+
+.blog-all-link-wrap {
+    text-align: center;
+    margin-top: 24px;
+}
+
+.blog-all-link {
+    display: inline-block;
+    padding: 12px 28px;
+    border-radius: 999px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border: 1px solid #c8e6c9;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.blog-all-link:hover {
+    background: #d3f0d5;
+    transform: translateY(-2px);
+}
+
+.hero-blog-cta {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.hero-blog-cta a {
+    color: #43a047;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.2s;
+}
+
+.hero-blog-cta a:hover {
+    border-bottom-color: #43a047;
 }
 
 .column-modal-body {
