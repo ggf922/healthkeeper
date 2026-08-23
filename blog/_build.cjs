@@ -131,8 +131,18 @@ const indexHtml = `<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>건강 정보 - 건강 100세</title>
     <meta name="description" content="건강 100세가 전하는 믿을 수 있는 건강 정보 ${totalCount}편. 심혈관·대사·면역·운동·영양·수면·마음 건강까지, 일상에서 실천하는 건강 상식을 쉽고 정확하게 알려드립니다.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://healthkeeper.shop/blog">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="건강 100세">
+    <meta property="og:title" content="건강 정보 - 건강 100세">
+    <meta property="og:description" content="믿을 수 있는 건강 정보 ${totalCount}편. 심혈관·대사·면역·운동·영양·수면·마음 건강 상식을 쉽고 정확하게 알려드립니다.">
+    <meta property="og:url" content="https://healthkeeper.shop/blog">
+    <meta property="og:image" content="https://healthkeeper.shop/assets/logo.png">
+    <meta property="og:locale" content="ko_KR">
+    <meta name="twitter:card" content="summary">
     <link rel="icon" type="image/png" href="../assets/favicon.png">
-    <link rel="stylesheet" href="../page.css?v=20260822">
+    <link rel="stylesheet" href="../page.css?v=20260823">
 </head>
 <body>
     <nav class="page-nav">
@@ -203,3 +213,34 @@ for (const slug of EXISTING_FILES) {
   navFixed++;
 }
 console.log('기존 아티클 네비게이션 갱신:', navFixed, '편');
+
+// 4) sitemap.xml 자동 생성 (루트 페이지 + 블로그 인덱스 + 전체 아티클)
+const SITE = 'https://healthkeeper.shop';
+const today = new Date().toISOString().slice(0, 10);
+// 루트 페이지: [경로, 우선순위, 변경주기]
+const rootPages = [
+  ['/',            '1.0', 'weekly'],
+  ['/about',       '0.6', 'monthly'],
+  ['/blog',        '0.9', 'weekly'],
+  ['/contact',     '0.5', 'monthly'],
+  ['/privacy',     '0.3', 'yearly'],
+  ['/terms',       '0.3', 'yearly'],
+  ['/disclaimer',  '0.3', 'yearly'],
+];
+function urlEntry(loc, priority, changefreq) {
+  return `  <url>
+    <loc>${SITE}${loc}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+  </url>`;
+}
+const rootEntries = rootPages.map(([p, pr, cf]) => urlEntry(p, pr, cf));
+const articleEntries = order.map(slug => urlEntry(`/blog/${slug}`, '0.8', 'monthly'));
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${[...rootEntries, ...articleEntries].join('\n')}
+</urlset>
+`;
+fs.writeFileSync(path.join(DIR, '..', 'sitemap.xml'), sitemap, 'utf8');
+console.log('sitemap.xml 생성 완료. 총 URL:', rootPages.length + order.length, '개');

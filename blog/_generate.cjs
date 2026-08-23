@@ -82,6 +82,7 @@ function buildArticle(a, prev, next) {
 
   const body = bodyParts.join('\n\n');
 
+  const canonical = `https://healthkeeper.shop/blog/${a.slug}`;
   return `<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -89,8 +90,36 @@ function buildArticle(a, prev, next) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${a.title} - 건강 100세</title>
     <meta name="description" content="${a.desc}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="${canonical}">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="건강 100세">
+    <meta property="og:title" content="${a.title}">
+    <meta property="og:description" content="${a.desc}">
+    <meta property="og:url" content="${canonical}">
+    <meta property="og:image" content="https://healthkeeper.shop/assets/logo.png">
+    <meta property="og:locale" content="ko_KR">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="${a.title}">
+    <meta name="twitter:description" content="${a.desc}">
     <link rel="icon" type="image/png" href="../assets/favicon.png">
-    <link rel="stylesheet" href="../page.css?v=20260822">
+    <link rel="stylesheet" href="../page.css?v=20260823">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": ${JSON.stringify(a.title)},
+      "description": ${JSON.stringify(a.desc)},
+      "inLanguage": "ko-KR",
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "${canonical}" },
+      "author": { "@type": "Organization", "name": "모두모두닷컴" },
+      "publisher": {
+        "@type": "Organization",
+        "name": "건강 100세 (모두모두닷컴)",
+        "logo": { "@type": "ImageObject", "url": "https://healthkeeper.shop/assets/logo.png" }
+      }
+    }
+    </script>
 </head>
 <body>
 ${NAV}
