@@ -800,6 +800,9 @@ body.rtl .benefit-list li {
 }
 
 .camera-feature-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
     background: linear-gradient(135deg, #fbfaff 0%, #f0edfb 100%);
     padding: 28px 24px;
     border-radius: 20px;
@@ -807,12 +810,28 @@ body.rtl .benefit-list li {
     transition: transform 0.35s ease, box-shadow 0.35s ease;
     box-shadow: 0 8px 24px rgba(30, 41, 59, 0.06);
     border: 1px solid rgba(139, 92, 246, 0.1);
+    cursor: pointer;
 }
 
 .camera-feature-card:hover {
     transform: translateY(-6px);
     box-shadow: var(--shadow-premium);
     border-color: rgba(139, 92, 246, 0.25);
+}
+
+.camera-feature-more {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: #7c3aed;
+    letter-spacing: 0.01em;
+    transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.camera-feature-card:hover .camera-feature-more {
+    color: #d946a8;
+    transform: translateX(4px);
 }
 
 .camera-feature-icon {

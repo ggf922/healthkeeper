@@ -4,12 +4,18 @@ const path = require('path');
 const { buildArticle } = require('./_generate.cjs');
 const data1 = require('./_data1.cjs');
 const data2 = require('./_data2.cjs');
+const data3 = require('./_data3.cjs');
 
 const DIR = __dirname;
-const newArticles = [...data1, ...data2];
+const newArticles = [...data1, ...data2, ...data3];
 
 // 기존 8편 메타데이터(목록 표시 + 네비게이션 순서용). 파일은 이미 존재하므로 재생성하지 않음.
 const existing = [
+  // AI 건강 분석 원리 시리즈 (카메라 카드 연결) — 맨 앞 배치
+  { slug:'ppg-heart-rate-science' },
+  { slug:'face-analysis-science' },
+  { slug:'tongue-diagnosis-science' },
+  { slug:'iris-eye-analysis-science' },
   { slug:'heart-rate-guide', icon:'❤️', category:'심혈관 건강', title:'정상 심박수는 몇일까? 심박수로 읽는 내 건강', short:'심박수 이야기', desc:'안정 시 심박수' },
   { slug:'blood-pressure-basics' },
   { slug:'blood-sugar-management' },
@@ -74,6 +80,7 @@ console.log('신규 아티클 생성:', generated, '편');
 
 // 2) blog/index.html 재생성 — 카테고리별 그룹
 const CATEGORIES = [
+  { name:'🔬 AI 건강 분석 원리 (카메라 건강 체크)', slugs:['ppg-heart-rate-science','face-analysis-science','tongue-diagnosis-science','iris-eye-analysis-science'] },
   { name:'심혈관·대사 건강', slugs:['heart-rate-guide','blood-pressure-basics','blood-sugar-management','metabolism-basics','healthy-weight'] },
   { name:'면역·장기 건강', slugs:['immunity-boost','gut-health','liver-care','kidney-health'] },
   { name:'근골격·뇌·마음 건강', slugs:['bone-joint-health','brain-health','mental-wellness'] },
@@ -85,6 +92,10 @@ const CATEGORIES = [
 
 // 카드용 요약(짧은 설명). 신규는 desc 사용, 기존 8편은 별도 문구.
 const cardSummary = {
+  'ppg-heart-rate-science':'스마트폰 카메라가 손가락 혈류의 색 변화로 심박수를 재는 PPG 원리와, 안정 시 심박수가 왜 중요한 건강 지표인지 알아봅니다.',
+  'face-analysis-science':'의사가 진료 첫 단계에서 얼굴을 관찰하는 이유와, 창백·황달 등 안색이 드러내는 건강 신호를 설명합니다.',
+  'tongue-diagnosis-science':'혀가 왜 전신 건강을 반영하는지, 혀 색과 설태가 알려주는 신호를 전통 설진과 현대의학 관점에서 살펴봅니다.',
+  'iris-eye-analysis-science':'눈이 왜 혈관을 직접 보는 창인지, 결막·공막·망막 혈관이 알려주는 건강 신호를 최신 AI 연구까지 담아 설명합니다.',
   'heart-rate-guide':'안정 시 심박수의 의미부터 카메라 측정 원리, 심박수를 낮추는 생활 습관까지 정리했습니다.',
   'sleep-health':'수면 부족이 몸에 미치는 영향과, 오늘 밤부터 실천할 수 있는 수면 위생 습관을 소개합니다.',
   'balanced-diet':'탄단지 균형부터 가공식품 줄이기, 나트륨 관리까지 건강한 식습관의 핵심을 담았습니다.',
